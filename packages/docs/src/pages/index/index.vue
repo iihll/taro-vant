@@ -1,23 +1,24 @@
 <template>
   <view class="index">
+    <Popover />
+    <Rate />
     <text>{{ msg }}</text>
-    <VantButton icon="plus" square type="primary">方形按钮</VantButton>
-    <VantButton icon="https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png" round type="success">圆形按钮</VantButton>
+    <VantButton
+      icon="plus"
+      square
+      type="primary"
+      @click="click"
+    >方形按钮</VantButton>
   </view>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 import './index.less'
 import VantButton from '../../components/button/Button'
+import VantIcon from '../../components/icon/Icon'
+import Popover from '../components/popover.vue'
+import Rate from '../components/rate.vue'
 
-export default {
-  components: { VantButton },
-  setup () {
-    const msg = ref('Hello world')
-    return {
-      msg
-    }
-  }
-}
+const msg = ref('Hello world')
 </script>
