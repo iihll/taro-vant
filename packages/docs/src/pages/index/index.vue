@@ -1,26 +1,20 @@
 <template>
   <view class="index">
-    <van-swipe-cell>
-      <template #left>
-        <van-button @click="test" square type="primary" text="选择" />
-      </template>
-      <van-cell :border="false" title="单元格" value="内容" />
-      <template #right>
-        <van-button square type="danger" text="删除" />
-        <van-button square type="primary" text="收藏" />
-      </template>
-    </van-swipe-cell>
+    <van-tabs>
+      <van-tab title="标签 1">
+        内容 1
+        <template #title>slot title</template>
+      </van-tab>
+      <van-tab title="标签 2">内容 2</van-tab>
+      <van-tab title="标签 3">内容 3</van-tab>
+      <van-tab title="标签 4">内容 4</van-tab>
+    </van-tabs>
   </view>
 </template>
 
 <script lang="ts" setup>
-import VanSwipeCell from '@/components/swipe-cell/SwipeCell'
-import VanButton from '@/components/button/Button'
-import VanCell from '@/components/cell/Cell'
-
-const test = (event) => {
-  console.log('test', event)
-}
+import VanTabs from '@/components/tabs/Tabs'
+import VanTab from '@/components/tab/Tab'
 </script>
 
 <style>
