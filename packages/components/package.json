@@ -1,0 +1,20 @@
+{
+  "name": "taro-vant",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tarojs/components": "3.6.25",
+    "@tarojs/plugin-platform-weapp": "3.6.25",
+    "@vant/icons": "workspace:*"
+  },
+  "devDependencies": {
+    "vue": "^3.0.0"
+  }
+}

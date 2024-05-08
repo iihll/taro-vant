@@ -1,6 +1,5 @@
 <script lang='ts' setup>
-import { Popover } from '../../components/index'
-import VanButton from '../..//components/button/Button'
+import { Popover, Button as VanButton } from 'taro-vant'
 import { ref } from 'vue'
 
 const showPopover = ref(false)

@@ -40,7 +40,6 @@
   "author": "",
   "dependencies": {
     "@babel/runtime": "^7.21.5",
-    "@tarojs/components": "3.6.25",
     "@tarojs/helper": "3.6.25",
     "@tarojs/plugin-framework-vue3": "3.6.25",
     "@tarojs/plugin-platform-alipay": "3.6.25",
@@ -54,11 +53,11 @@
     "@tarojs/runtime": "3.6.25",
     "@tarojs/shared": "3.6.25",
     "@tarojs/taro": "3.6.25",
-    "@vant/icons": "workspace:*",
     "@vue/shared": "^3.4.26",
     "vue": "^3.0.0"
   },
   "devDependencies": {
+    "taro-vant": "workspace:*",
     "@babel/core": "^7.8.0",
     "@iihll/eslint-config": "^0.0.5",
     "@tarojs/cli": "3.6.25",

@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import { Rate } from '../../components/index'
+import { Rate } from 'taro-vant'
 import { ref } from 'vue'
 
 const value = ref(3)

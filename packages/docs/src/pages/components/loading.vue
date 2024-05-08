@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import { Loading } from '../../components/index'
+import { Loading } from 'taro-vant'
 </script>
 
 <template>
