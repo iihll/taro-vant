@@ -1,24 +1,36 @@
 <template>
   <view class="index">
-    <van-button type="primary" text="显示遮罩层" @click="show = true" />
-    <van-overlay :show="show" @click="show = false" />
+    <Popover />
+    <Rate />
+    <Loading />
+    <text>{{ msg }}</text>
+    <VantButton
+      icon="plus"
+      square
+      type="primary"
+      @click="click"
+    >方形按钮</VantButton>
   </view>
 </template>
 
-<script lang="ts" setup>
-import VanButton from '@/components/button/Button'
-import VanOverlay from '@/components/overlay/Overlay'
-import { ref } from 'vue';
+<script setup>
+import { ref } from 'vue'
+import './index.less'
+import VantButton from '../../components/button/Button'
+import VantIcon from '../../components/icon/Icon'
+import Popover from '../components/popover.vue'
+import Rate from '../components/rate.vue'
+import Loading from '../components/loading.vue'
 
-const show = ref(false);
+const msg = ref('Hello world')
 </script>
 
 <style>
-  .my-swipe .van-swipe-item {
-    color: #fff;
-    font-size: 40px;
-    line-height: 300px;
-    text-align: center;
-    background-color: #39a9ed;
-  }
+.my-swipe .van-swipe-item {
+  color: #fff;
+  font-size: 40px;
+  line-height: 300px;
+  text-align: center;
+  background-color: #39a9ed;
+}
 </style>
