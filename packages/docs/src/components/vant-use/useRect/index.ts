@@ -1,3 +1,4 @@
+import Taro from '@tarojs/taro';
 import { Ref, unref } from 'vue';
 
 const isWindow = (val: unknown): val is Window => val === window;
@@ -28,4 +29,13 @@ export const useRect = (
   }
 
   return makeDOMRect(0, 0);
+};
+
+export const useTaroRect = (selector: string): Promise<Taro.NodesRef.BoundingClientRectCallbackResult> => {
+  return new Promise((resolve) => {
+    const query = Taro.createSelectorQuery()
+    query.select(selector).boundingClientRect(res => {
+      resolve(res as Taro.NodesRef.BoundingClientRectCallbackResult)
+    }).exec()
+  })
 };

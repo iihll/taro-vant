@@ -24,3 +24,13 @@ import Loading from '../components/loading.vue'
 
 const msg = ref('Hello world')
 </script>
+
+<style>
+.my-swipe .van-swipe-item {
+  color: #fff;
+  font-size: 40px;
+  line-height: 300px;
+  text-align: center;
+  background-color: #39a9ed;
+}
+</style>

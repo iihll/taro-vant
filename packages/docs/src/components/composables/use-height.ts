@@ -1,4 +1,4 @@
-import { useRect } from '@vant/use';
+import { useRect } from '../vant-use';
 import { Ref, ref, onMounted, nextTick, watch } from 'vue';
 import { windowHeight, windowWidth } from '../utils';
 import { onPopupReopen } from './on-popup-reopen';

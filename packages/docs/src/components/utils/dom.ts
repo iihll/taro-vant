@@ -75,12 +75,13 @@ export function isHidden(
   }
 
   const style = window.getComputedStyle(el);
+  const parentStyle = window.getComputedStyle(el.parentNode as Element)
   const hidden = style.display === 'none';
 
   // offsetParent returns null in the following situations:
   // 1. The element or its parent element has the display property set to none.
   // 2. The element has the position property set to fixed
-  const parentHidden = el.offsetParent === null && style.position !== 'fixed';
+  const parentHidden = parentStyle.display === 'none' && style.position !== 'fixed';
 
   return hidden || parentHidden;
 }
