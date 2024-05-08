@@ -55,7 +55,7 @@
     "@tarojs/shared": "3.6.25",
     "@tarojs/taro": "3.6.25",
     "vue": "^3.0.0",
-    "vant": "workspace:*"
+    "@vant/icons": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",

@@ -1,7 +1,8 @@
 <template>
   <view class="index">
     <text>{{ msg }}</text>
-    <VantButton type="primary">test</VantButton>
+    <VantButton icon="plus" square type="primary">方形按钮</VantButton>
+    <VantButton icon="https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png" round type="success">圆形按钮</VantButton>
   </view>
 </template>
 

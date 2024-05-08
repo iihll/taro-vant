@@ -1,7 +1,4 @@
 {
   "root": true,
-  "extends": ["@vant"],
-  "rules": {
-    "prefer-object-spread": "off"
-  }
+  "extends": ["@iihll"]
 }

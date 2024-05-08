@@ -2,5 +2,5 @@
 // https://eslint.vuejs.org/user-guide/#editor-integrations
 {
   // "extends": ["taro/vue3"]
-  "extends": ["@iihll"]
+  // "extends": ["@iihll"]
 }

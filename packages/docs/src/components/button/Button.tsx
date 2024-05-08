@@ -14,12 +14,11 @@ import {
   createNamespace,
   BORDER_SURROUND,
 } from '../utils';
-import { useRoute, routeProps } from '../composables/use-route';
 import { View, Text, Button } from '@tarojs/components'
 import './index.less'
 
 // Components
-// import { Icon } from '../icon';
+import { Icon } from '../icon';
 // import { Loading, LoadingType } from '../loading';
 
 // Types
@@ -32,8 +31,7 @@ import {
 
 const [name, bem] = createNamespace('button');
 
-export const buttonProps = extend({}, routeProps, {
-  tag: makeStringProp<keyof HTMLElementTagNameMap>('button'),
+export const buttonProps = extend({}, {
   text: String,
   icon: String,
   type: makeStringProp<ButtonType>('default'),
@@ -91,14 +89,13 @@ export default defineComponent({
       }
 
       if (props.icon) {
-        // return (
-        //   <Icon
-        //     name={props.icon}
-        //     class={bem('icon')}
-        //     classPrefix={props.iconPrefix}
-        //   />
-        // );
-        return null
+        return (
+          <Icon
+            name={props.icon}
+            class={bem('icon')}
+            classPrefix={props.iconPrefix}
+          />
+        );
       }
     };
 
@@ -149,7 +146,6 @@ export default defineComponent({
 
     return () => {
       const {
-        tag,
         type,
         size,
         block,
