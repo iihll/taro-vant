@@ -182,7 +182,7 @@ export default defineComponent({
           class={classes}
           style={getStyle()}
           disabled={disabled}
-          onClick={onClick}
+          onTap={onClick}
         >
           <View class={bem('content')}>
             {iconPosition === 'left' && renderIcon()}

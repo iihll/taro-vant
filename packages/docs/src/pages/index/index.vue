@@ -2,7 +2,7 @@
   <view class="index">
     <van-swipe-cell>
       <template #left>
-        <van-button square type="primary" text="选择" />
+        <van-button @click="test" square type="primary" text="选择" />
       </template>
       <van-cell :border="false" title="单元格" value="内容" />
       <template #right>
@@ -17,6 +17,10 @@
 import VanSwipeCell from '@/components/swipe-cell/SwipeCell'
 import VanButton from '@/components/button/Button'
 import VanCell from '@/components/cell/Cell'
+
+const test = (event) => {
+  console.log('test', event)
+}
 </script>
 
 <style>
