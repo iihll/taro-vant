@@ -1,14 +1,21 @@
 <script lang="ts" setup>
-import { Sticky, VanButton } from 'taro-vant'
+import { VanTag } from 'taro-vant'
 </script>
 
 <template>
   <view class="index">
-    <Sticky>
-      <VanButton type="primary">
-        基础用法
-      </VanButton>
-    </Sticky>
+    <VanTag type="primary">
+      标签
+    </VanTag>
+    <VanTag type="success">
+      标签
+    </VanTag>
+    <VanTag type="danger">
+      标签
+    </VanTag>
+    <VanTag type="warning">
+      标签
+    </VanTag>
   </view>
 </template>
 
