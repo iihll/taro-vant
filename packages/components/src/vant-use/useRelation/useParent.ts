@@ -1,12 +1,14 @@
-import {
-  ref,
-  inject,
-  computed,
-  onUnmounted,
-  InjectionKey,
-  getCurrentInstance,
-  ComponentPublicInstance,
+import type {
   ComponentInternalInstance,
+  ComponentPublicInstance,
+  InjectionKey,
+} from 'vue'
+import {
+  computed,
+  getCurrentInstance,
+  inject,
+  onUnmounted,
+  ref,
 } from 'vue'
 
 type ParentProvide<T> = T & {
@@ -21,7 +23,6 @@ export function useParent<T>(key: InjectionKey<ParentProvide<T>>) {
 
   if (parent) {
     const instance = getCurrentInstance()!
-    console.log('instance', instance)
 
     const { link, unlink, internalChildren } = parent
 
