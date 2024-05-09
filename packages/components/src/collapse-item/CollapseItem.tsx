@@ -1,16 +1,17 @@
 import {
-  ref,
   computed,
   defineComponent,
   onMounted,
+  ref,
 } from 'vue'
 import './index.less'
 
 // Utils
+import { View } from '@tarojs/components'
 import { cellSharedProps } from '../cell/Cell'
 import {
-  pick,
   createNamespace,
+  pick,
 } from '../utils'
 import { COLLAPSE_KEY } from '../collapse/Collapse'
 
@@ -19,15 +20,12 @@ import { useParent, useTaroRect } from '../vant-use'
 import { useExpose } from '../composables/use-expose'
 
 // Components
-import { View } from '@tarojs/components'
-import { Cell } from '../cell'
+import { VanCell as Cell } from '../cell'
 import { collapseItemProps } from './types'
 
 const [name, bem] = createNamespace('collapse-item')
 
 const CELL_SLOTS = ['icon', 'title', 'value', 'label', 'right-icon'] as const
-
-
 
 export default defineComponent({
   name,
@@ -55,7 +53,6 @@ export default defineComponent({
 
     onMounted(() => {
       useTaroRect(`.${contentClassName}`).then((res) => {
-
         if (!res)
           return
 
@@ -70,9 +67,8 @@ export default defineComponent({
     }
 
     const onClickTitle = () => {
-      if (!props.disabled && !props.readonly) {
+      if (!props.disabled && !props.readonly)
         toggle()
-      }
     }
 
     const renderTitle = () => {
@@ -82,12 +78,11 @@ export default defineComponent({
         Object.keys(cellSharedProps) as Array<keyof typeof cellSharedProps>,
       )
 
-      if (readonly) {
+      if (readonly)
         attrs.isLink = false
-      }
-      if (disabled || readonly) {
+
+      if (disabled || readonly)
         attrs.clickable = false
-      }
 
       return (
         <Cell

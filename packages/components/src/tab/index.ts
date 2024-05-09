@@ -1,12 +1,12 @@
-import _Tab from './Tab';
+import _Tab from './Tab'
 
 export const Tab = _Tab
-export default Tab;
-export { tabProps } from './Tab';
-export type { TabProps } from './Tab';
+export default Tab
+export { tabProps } from './Tab'
+export type { TabProps } from './Tab'
 
 declare module 'vue' {
   export interface GlobalComponents {
-    VanTab: typeof Tab;
+    VanTab: typeof Tab
   }
 }

@@ -1,15 +1,12 @@
 <script lang="ts" setup>
-import { Sticky, VanButton } from 'taro-vant'
+import { Cascader } from 'taro-vant'
+import { View } from '@tarojs/components'
 </script>
 
 <template>
-  <view class="index">
-    <Sticky>
-      <VanButton type="primary">
-        基础用法
-      </VanButton>
-    </Sticky>
-  </view>
+  <View class="index">
+    <Cascader switch-mode="year-month" />
+  </View>
 </template>
 
 <style>

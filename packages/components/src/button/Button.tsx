@@ -8,7 +8,7 @@ import type {
 } from 'vue'
 
 // Utils
-import type { CommonEventFunction } from '@tarojs/components'
+import type { CommonEventFunction, ButtonProps as TaroButtonProps } from '@tarojs/components'
 import { Button, Text, View } from '@tarojs/components'
 import {
   BORDER_SURROUND,
@@ -53,6 +53,7 @@ export const buttonProps = extend({}, {
   loadingText: String,
   loadingType: String as PropType<LoadingType>,
   iconPosition: makeStringProp<ButtonIconPosition>('left'),
+  formType: makeStringProp<keyof TaroButtonProps.FormType>('submit'),
 })
 
 export type ButtonProps = ExtractPropTypes<typeof buttonProps>
@@ -151,6 +152,7 @@ export default defineComponent({
         disabled,
         hairline,
         iconPosition,
+        formType,
       } = props
 
       const classes = [
@@ -176,6 +178,7 @@ export default defineComponent({
           style={getStyle()}
           disabled={disabled}
           onTap={onClick}
+          formType={formType}
         >
           <View class={bem('content')}>
             {iconPosition === 'left' && renderIcon()}
