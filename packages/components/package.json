@@ -13,7 +13,8 @@
     "@tarojs/components": "3.6.25",
     "@tarojs/plugin-platform-weapp": "3.6.25",
     "@tarojs/taro": "3.6.25",
-    "@vant/icons": "workspace:*"
+    "@vant/icons": "workspace:*",
+    "@vue/shared": "^3.4.26"
   },
   "devDependencies": {
     "vue": "^3.0.0"
