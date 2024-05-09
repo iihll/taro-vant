@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import VanSticky from '..';
-import VanButton from '../../button';
-import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site';
+import { ref } from 'vue'
+import VanSticky from '..'
+import VanButton from '../../button'
+import { useTranslate } from '../../../docs/site'
 
 const t = useTranslate({
   'zh-CN': {
@@ -15,26 +15,26 @@ const t = useTranslate({
     offsetBottom: 'Offset Bottom',
     setContainer: 'Set Container',
   },
-});
+})
 
-const container = ref<Element>();
+const container = ref<Element>()
 </script>
 
 <template>
   <demo-block :title="t('basicUsage')">
-    <van-sticky>
-      <van-button type="primary" style="margin-left: 15px">
+    <VanSticky>
+      <VanButton type="primary" style="margin-left: 15px">
         {{ t('basicUsage') }}
-      </van-button>
-    </van-sticky>
+      </VanButton>
+    </VanSticky>
   </demo-block>
 
   <demo-block :title="t('offsetTop')">
-    <van-sticky :offset-top="50">
-      <van-button type="primary" style="margin-left: 115px">
+    <VanSticky :offset-top="50">
+      <VanButton type="primary" style="margin-left: 115px">
         {{ t('offsetTop') }}
-      </van-button>
-    </van-sticky>
+      </VanButton>
+    </VanSticky>
   </demo-block>
 
   <demo-block :title="t('setContainer')">
@@ -42,21 +42,21 @@ const container = ref<Element>();
       ref="container"
       style="height: 150px; background-color: var(--van-background-2)"
     >
-      <van-sticky :container="container">
-        <van-button type="warning" style="margin-left: 215px">
+      <VanSticky :container="container">
+        <VanButton type="warning" style="margin-left: 215px">
           {{ t('setContainer') }}
-        </van-button>
-      </van-sticky>
+        </VanButton>
+      </VanSticky>
     </div>
   </demo-block>
 
   <demo-block :title="t('offsetBottom')">
-    <div style="height: 200px"></div>
-    <van-sticky :offset-bottom="50" position="bottom">
-      <van-button type="primary" style="margin-left: 15px">
+    <div style="height: 200px" />
+    <VanSticky :offset-bottom="50" position="bottom">
+      <VanButton type="primary" style="margin-left: 15px">
         {{ t('offsetBottom') }}
-      </van-button>
-    </van-sticky>
+      </VanButton>
+    </VanSticky>
   </demo-block>
 </template>
 
