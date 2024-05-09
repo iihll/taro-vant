@@ -1,17 +1,17 @@
-import { defineComponent, type ExtractPropTypes } from 'vue';
-import { truthProp, createNamespace, BORDER_TOP_BOTTOM } from '../utils';
-import { useScopeId } from '../composables/use-scope-id';
+import { type ExtractPropTypes, defineComponent } from 'vue'
 import { View } from '@tarojs/components'
+import { BORDER_TOP_BOTTOM, createNamespace, truthProp } from '../utils'
+import { useScopeId } from '../composables/use-scope-id'
 
-const [name, bem] = createNamespace('cell-group');
+const [name, bem] = createNamespace('cell-group')
 
 export const cellGroupProps = {
   title: String,
   inset: Boolean,
   border: truthProp,
-};
+}
 
-export type CellGroupProps = ExtractPropTypes<typeof cellGroupProps>;
+export type CellGroupProps = ExtractPropTypes<typeof cellGroupProps>
 
 export default defineComponent({
   name,
@@ -32,13 +32,13 @@ export default defineComponent({
       >
         {slots.default?.()}
       </View>
-    );
+    )
 
     const renderTitle = () => (
       <View class={bem('title', { inset: props.inset })}>
         {slots.title ? slots.title() : props.title}
       </View>
-    );
+    )
 
     return () => {
       if (props.title || slots.title) {
@@ -47,10 +47,10 @@ export default defineComponent({
             {renderTitle()}
             {renderGroup()}
           </>
-        );
+        )
       }
 
-      return renderGroup();
-    };
+      return renderGroup()
+    }
   },
-});
+})

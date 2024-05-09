@@ -1,35 +1,39 @@
 import {
   defineComponent,
-} from 'vue';
-import type { PropType,
+} from 'vue'
+import type {
   CSSProperties,
-  ExtractPropTypes,} from 'vue'
+  ExtractPropTypes,
+  PropType,
+} from 'vue'
 
 // Utils
+import type { CommonEventFunction } from '@tarojs/components'
+import { Button, Text, View } from '@tarojs/components'
 import {
+  BORDER_SURROUND,
+  createNamespace,
   extend,
+  makeStringProp,
   numericProp,
   preventDefault,
-  makeStringProp,
-  createNamespace,
-  BORDER_SURROUND,
-} from '../utils';
-import { View, Text, Button } from '@tarojs/components'
+} from '../utils'
 import './index.less'
 
 // Components
-import { Icon } from '../icon';
-// import { Loading, LoadingType } from '../loading';
+import { Icon } from '../icon'
+
+import type { LoadingType } from '../loading'
+import { Loading } from '../loading'
 
 // Types
-import {
+import type {
+  ButtonIconPosition,
   ButtonSize,
   ButtonType,
-  ButtonNativeType,
-  ButtonIconPosition,
-} from './types';
+} from './types'
 
-const [name, bem] = createNamespace('button');
+const [name, bem] = createNamespace('button')
 
 export const buttonProps = extend({}, {
   text: String,
@@ -45,14 +49,13 @@ export const buttonProps = extend({}, {
   hairline: Boolean,
   disabled: Boolean,
   iconPrefix: String,
-  nativeType: makeStringProp<ButtonNativeType>('button'),
   loadingSize: numericProp,
   loadingText: String,
-  // loadingType: String as PropType<LoadingType>,
+  loadingType: String as PropType<LoadingType>,
   iconPosition: makeStringProp<ButtonIconPosition>('left'),
-});
+})
 
-export type ButtonProps = ExtractPropTypes<typeof buttonProps>;
+export type ButtonProps = ExtractPropTypes<typeof buttonProps>
 
 export default defineComponent({
   name,
@@ -65,28 +68,24 @@ export default defineComponent({
     // const route = useRoute();
 
     const renderLoadingIcon = () => {
-      if (slots.loading) {
-        return slots.loading();
-      }
+      if (slots.loading)
+        return slots.loading()
 
-      // return (
-      //   <Loading
-      //     size={props.loadingSize}
-      //     type={props.loadingType}
-      //     class={bem('loading')}
-      //   />
-      // );
-      return null
-    };
+      return (
+        <Loading
+          size={props.loadingSize}
+          type={props.loadingType}
+          class={bem('loading')}
+        />
+      )
+    }
 
     const renderIcon = () => {
-      if (props.loading) {
-        return renderLoadingIcon();
-      }
+      if (props.loading)
+        return renderLoadingIcon()
 
-      if (slots.icon) {
-        return <View class={bem('icon')}>{slots.icon()}</View>;
-      }
+      if (slots.icon)
+        return <View class={bem('icon')}>{slots.icon()}</View>
 
       if (props.icon) {
         return (
@@ -95,54 +94,50 @@ export default defineComponent({
             class={bem('icon')}
             classPrefix={props.iconPrefix}
           />
-        );
+        )
       }
-    };
+    }
 
     const renderText = () => {
-      let text;
-      if (props.loading) {
-        text = props.loadingText;
-      } else {
-        text = slots.default ? slots.default() : props.text;
-      }
+      let text
+      if (props.loading)
+        text = props.loadingText
+      else
+        text = slots.default ? slots.default() : props.text
 
-      if (text) {
-        return <Text class={bem('text')}>{text}</Text>;
-      }
-    };
+      if (text)
+        return <Text class={bem('text')}>{text}</Text>
+    }
 
     const getStyle = () => {
-      const { color, plain } = props;
+      const { color, plain } = props
       if (color) {
         const style: CSSProperties = {
           color: plain ? color : 'white',
-        };
+        }
 
         if (!plain) {
           // Use background instead of backgroundColor to make linear-gradient work
-          style.background = color;
+          style.background = color
         }
 
         // hide border when color is linear-gradient
-        if (color.includes('gradient')) {
-          style.border = 0;
-        } else {
-          style.borderColor = color;
-        }
+        if (color.includes('gradient'))
+          style.border = 0
+        else
+          style.borderColor = color
 
-        return style;
+        return style
       }
-    };
+    }
 
-    const onClick = (event: MouseEvent) => {
-      if (props.loading) {
-        preventDefault(event);
-      } else if (!props.disabled) {
-        emit('click', event);
+    const onClick: CommonEventFunction = (event) => {
+      if (props.loading)
+        preventDefault(event)
+      else if (!props.disabled)
+        emit('click', event)
         // route();
-      }
-    };
+    }
 
     return () => {
       const {
@@ -155,9 +150,8 @@ export default defineComponent({
         loading,
         disabled,
         hairline,
-        nativeType,
         iconPosition,
-      } = props;
+      } = props
 
       const classes = [
         bem([
@@ -174,11 +168,10 @@ export default defineComponent({
           },
         ]),
         { [BORDER_SURROUND]: hairline },
-      ];
+      ]
 
       return (
         <Button
-          type={nativeType}
           class={classes}
           style={getStyle()}
           disabled={disabled}
@@ -190,7 +183,7 @@ export default defineComponent({
             {iconPosition === 'right' && renderIcon()}
           </View>
         </Button>
-      );
-    };
+      )
+    }
   },
-});
+})

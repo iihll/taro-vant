@@ -1,42 +1,42 @@
 import {
-  defineComponent,
   Comment,
+  type ExtractPropTypes,
   Fragment,
   type InjectionKey,
-  type ExtractPropTypes,
   type VNode,
-} from 'vue';
+  defineComponent,
+} from 'vue'
 import './index.less'
 import { View } from '@tarojs/components'
 
 // Utils
 import {
-  flat,
-  pick,
+  createNamespace,
   extend,
+  flat,
   makeArrayProp,
   makeNumericProp,
-  createNamespace,
+  pick,
   truthProp,
-} from '../utils';
+} from '../utils'
 
 // Composables
-import { useChildren } from '../vant-use';
-import { useSyncPropRef } from '../composables/use-sync-prop-ref';
+import { useChildren } from '../vant-use'
+import { useSyncPropRef } from '../composables/use-sync-prop-ref'
 
 // Components
-import { Tab } from '../tab';
-import { Tabs } from '../tabs';
+import { Tab } from '../tab'
+import { Tabs } from '../tabs'
 import Toolbar, {
   pickerToolbarProps,
   pickerToolbarSlots,
-} from '../picker/PickerToolbar';
+} from '../picker/PickerToolbar'
 
-const [name, bem] = createNamespace('picker-group');
+const [name, bem] = createNamespace('picker-group')
 
-export type PickerGroupProvide = Record<string, string>;
+export type PickerGroupProvide = Record<string, string>
 
-export const PICKER_GROUP_KEY: InjectionKey<PickerGroupProvide> = Symbol(name);
+export const PICKER_GROUP_KEY: InjectionKey<PickerGroupProvide> = Symbol(name)
 
 export const pickerGroupProps = extend(
   {
@@ -46,9 +46,9 @@ export const pickerGroupProps = extend(
     showToolbar: truthProp,
   },
   pickerToolbarProps,
-);
+)
 
-export type PickerGroupProps = ExtractPropTypes<typeof pickerGroupProps>;
+export type PickerGroupProps = ExtractPropTypes<typeof pickerGroupProps>
 
 export default defineComponent({
   name,
@@ -60,51 +60,51 @@ export default defineComponent({
   setup(props, { emit, slots }) {
     const activeTab = useSyncPropRef(
       () => props.activeTab,
-      (value) => emit('update:activeTab', value),
-    );
-    const { children, linkChildren } = useChildren(PICKER_GROUP_KEY);
+      value => emit('update:activeTab', value),
+    )
+    const { children, linkChildren } = useChildren(PICKER_GROUP_KEY)
 
-    linkChildren();
+    linkChildren()
 
     const showNextButton = () =>
-      +activeTab.value < props.tabs.length - 1 && props.nextStepText;
+      +activeTab.value < props.tabs.length - 1 && props.nextStepText
 
     const onConfirm = () => {
       if (showNextButton()) {
-        activeTab.value = +activeTab.value + 1;
-      } else {
+        activeTab.value = +activeTab.value + 1
+      }
+      else {
         emit(
           'confirm',
-          children.map((item) => item.confirm()),
-        );
+          children.map(item => item.confirm()),
+        )
       }
-    };
+    }
 
-    const onCancel = () => emit('cancel');
+    const onCancel = () => emit('cancel')
 
     return () => {
       let childNodes = slots
         .default?.()
-        ?.filter((node) => node.type !== Comment)
+        ?.filter(node => node.type !== Comment)
         .map((node) => {
-          if (node.type === Fragment) {
-            return node.children as VNode[];
-          }
+          if (node.type === Fragment)
+            return node.children as VNode[]
 
-          return node;
-        });
+          return node
+        })
 
-      if (childNodes) {
-        childNodes = flat(childNodes);
-      }
+      if (childNodes)
+        childNodes = flat(childNodes)
 
       const confirmButtonText = showNextButton()
         ? props.nextStepText
-        : props.confirmButtonText;
+        : props.confirmButtonText
 
       return (
         <View class={bem()}>
-          {props.showToolbar ? (
+          {props.showToolbar
+            ? (
             <Toolbar
               v-slots={pick(slots, pickerToolbarSlots)}
               title={props.title}
@@ -113,7 +113,8 @@ export default defineComponent({
               onConfirm={onConfirm}
               onCancel={onCancel}
             />
-          ) : null}
+              )
+            : null}
           <Tabs
             v-model:active={activeTab.value}
             class={bem('tabs')}
@@ -128,7 +129,7 @@ export default defineComponent({
             ))}
           </Tabs>
         </View>
-      );
-    };
+      )
+    }
   },
-});
+})

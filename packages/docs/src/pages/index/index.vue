@@ -1,18 +1,17 @@
+<script lang="ts" setup>
+import { Swipe, SwipeItem } from 'taro-vant'
+</script>
+
 <template>
   <view class="index">
-    <Popover />
-    <Rate />
-    <Loading />
+    <Swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+      <SwipeItem>1</SwipeItem>
+      <SwipeItem>2</SwipeItem>
+      <SwipeItem>3</SwipeItem>
+      <SwipeItem>4</SwipeItem>
+    </Swipe>
   </view>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-import './index.less'
-import Popover from '../components/popover.vue'
-import Rate from '../components/rate.vue'
-import Loading from '../components/loading.vue'
-</script>
 
 <style>
 .my-swipe .van-swipe-item {

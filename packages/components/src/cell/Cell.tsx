@@ -1,34 +1,34 @@
 import {
-  defineComponent,
-  type PropType,
   type CSSProperties,
   type ExtractPropTypes,
-} from 'vue';
+  type PropType,
+  defineComponent,
+} from 'vue'
+import { Text, View } from '@tarojs/components'
 
 // Utils
 import {
-  isDef,
+  createNamespace,
   extend,
+  isDef,
+  makeStringProp,
+  numericProp,
   truthProp,
   unknownProp,
-  numericProp,
-  makeStringProp,
-  createNamespace,
-} from '../utils';
+} from '../utils'
 import './index.less'
-import { View, Text } from '@tarojs/components'
 
 // Composables
-import { useRoute, routeProps } from '../composables/use-route';
+import { routeProps, useRoute } from '../composables/use-route'
 
 // Components
-import { Icon } from '../icon';
+import { Icon } from '../icon'
 
-const [name, bem] = createNamespace('cell');
+const [name, bem] = createNamespace('cell')
 
-export type CellSize = 'normal' | 'large';
+export type CellSize = 'normal' | 'large'
 
-export type CellArrowDirection = 'up' | 'down' | 'left' | 'right';
+export type CellArrowDirection = 'up' | 'down' | 'left' | 'right'
 
 export const cellSharedProps = {
   tag: makeStringProp<keyof HTMLElementTagNameMap>('div'),
@@ -44,7 +44,7 @@ export const cellSharedProps = {
   valueClass: unknownProp,
   labelClass: unknownProp,
   titleClass: unknownProp,
-  titleStyle: null as unknown as PropType<string | CSSProperties>,
+  titleStyle: null as unknown as PropType<CSSProperties>,
   arrowDirection: String as PropType<CellArrowDirection>,
   required: {
     type: [Boolean, String] as PropType<boolean | 'auto'>,
@@ -54,11 +54,11 @@ export const cellSharedProps = {
     type: Boolean as PropType<boolean | null>,
     default: null,
   },
-};
+}
 
-export const cellProps = extend({}, cellSharedProps, routeProps);
+export const cellProps = extend({}, cellSharedProps, routeProps)
 
-export type CellProps = ExtractPropTypes<typeof cellProps>;
+export type CellProps = ExtractPropTypes<typeof cellProps>
 
 export default defineComponent({
   name,
@@ -66,29 +66,28 @@ export default defineComponent({
   props: cellProps,
 
   setup(props, { slots }) {
-    const route = useRoute();
+    const route = useRoute()
 
     const renderLabel = () => {
-      const showLabel = slots.label || isDef(props.label);
+      const showLabel = slots.label || isDef(props.label)
 
       if (showLabel) {
         return (
           <View class={[bem('label'), props.labelClass]}>
             {slots.label ? slots.label() : props.label}
           </View>
-        );
+        )
       }
-    };
+    }
 
     const renderTitle = () => {
       if (slots.title || isDef(props.title)) {
-        const titleSlot = slots.title?.();
+        const titleSlot = slots.title?.()
 
         // Allow Field to dynamically set empty label
         // https://github.com/youzan/vant/issues/11368
-        if (Array.isArray(titleSlot) && titleSlot.length === 0) {
-          return;
-        }
+        if (Array.isArray(titleSlot) && titleSlot.length === 0)
+          return
 
         return (
           <View
@@ -98,28 +97,27 @@ export default defineComponent({
             {titleSlot || <Text>{props.title}</Text>}
             {renderLabel()}
           </View>
-        );
+        )
       }
-    };
+    }
 
     const renderValue = () => {
       // slots.default is an alias of slots.value
-      const slot = slots.value || slots.default;
-      const hasValue = slot || isDef(props.value);
+      const slot = slots.value || slots.default
+      const hasValue = slot || isDef(props.value)
 
       if (hasValue) {
         return (
           <View class={[bem('value'), props.valueClass]}>
             {slot ? slot() : <Text>{props.value}</Text>}
           </View>
-        );
+        )
       }
-    };
+    }
 
     const renderLeftIcon = () => {
-      if (slots.icon) {
-        return slots.icon();
-      }
+      if (slots.icon)
+        return slots.icon()
 
       if (props.icon) {
         return (
@@ -128,37 +126,35 @@ export default defineComponent({
             class={bem('left-icon')}
             classPrefix={props.iconPrefix}
           />
-        );
+        )
       }
-    };
+    }
 
     const renderRightIcon = () => {
-      if (slots['right-icon']) {
-        return slots['right-icon']();
-      }
+      if (slots['right-icon'])
+        return slots['right-icon']()
 
       if (props.isLink) {
-        const name =
-          props.arrowDirection && props.arrowDirection !== 'right'
+        const name
+          = props.arrowDirection && props.arrowDirection !== 'right'
             ? `arrow-${props.arrowDirection}`
-            : 'arrow';
-        return <Icon name={name} class={bem('right-icon')} />;
+            : 'arrow'
+        return <Icon name={name} class={bem('right-icon')} />
       }
-    };
+    }
 
     return () => {
-      const { tag, size, center, border, isLink, required } = props;
-      const clickable = props.clickable ?? isLink;
+      const { size, center, border, isLink, required } = props
+      const clickable = props.clickable ?? isLink
 
       const classes: Record<string, boolean | undefined> = {
         center,
         required: !!required,
         clickable,
         borderless: !border,
-      };
-      if (size) {
-        classes[size] = !!size;
       }
+      if (size)
+        classes[size] = !!size
 
       return (
         <View
@@ -173,7 +169,7 @@ export default defineComponent({
           {renderRightIcon()}
           {slots.extra?.()}
         </View>
-      );
-    };
+      )
+    }
   },
-});
+})

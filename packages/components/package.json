@@ -12,6 +12,7 @@
   "dependencies": {
     "@tarojs/components": "3.6.25",
     "@tarojs/plugin-platform-weapp": "3.6.25",
+    "@tarojs/taro": "3.6.25",
     "@vant/icons": "workspace:*"
   },
   "devDependencies": {

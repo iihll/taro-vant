@@ -1,50 +1,50 @@
 import {
-  ref,
-  watch,
-  reactive,
+  type CSSProperties,
+  type ExtractPropTypes,
+  type InjectionKey,
   computed,
-  onMounted,
-  onActivated,
-  onDeactivated,
-  onBeforeUnmount,
   defineComponent,
   nextTick,
-  type ExtractPropTypes,
-  type CSSProperties,
-  type InjectionKey,
-} from 'vue';
-import { View, Text } from '@tarojs/components'
+  onActivated,
+  onBeforeUnmount,
+  onDeactivated,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from 'vue'
+import type { EventProps } from '@tarojs/components'
+import { Text, View } from '@tarojs/components'
 import './index.less'
 
 // Utils
 import {
   clamp,
-  isHidden,
-  truthProp,
-  numericProp,
-  windowWidth,
-  windowHeight,
-  preventDefault,
   createNamespace,
+  isHidden,
   makeNumericProp,
-} from '../utils';
+  numericProp,
+  preventDefault,
+  truthProp,
+  windowHeight,
+  windowWidth,
+} from '../utils'
 
 // Composables
 import {
   doubleRaf,
   useChildren,
-  useEventListener,
   usePageVisibility,
-} from '../vant-use';
-import { useTouch } from '../composables/use-touch';
-import { useExpose } from '../composables/use-expose';
-import { onPopupReopen } from '../composables/on-popup-reopen';
+  useTaroRect,
+} from '../vant-use'
+import { useTouch } from '../composables/use-touch'
+import { useExpose } from '../composables/use-expose'
+import { onPopupReopen } from '../composables/on-popup-reopen'
 
 // Types
-import { SwipeState, SwipeExpose, SwipeProvide, SwipeToOptions } from './types';
-import { createSelectorQuery } from '@tarojs/taro';
+import type { SwipeExpose, SwipeProvide, SwipeState, SwipeToOptions } from './types'
 
-const [name, bem] = createNamespace('swipe');
+const [name, bem] = createNamespace('swipe')
 
 export const swipeProps = {
   loop: truthProp,
@@ -59,11 +59,11 @@ export const swipeProps = {
   indicatorColor: String,
   showIndicators: truthProp,
   stopPropagation: truthProp,
-};
+}
 
-export type SwipeProps = ExtractPropTypes<typeof swipeProps>;
+export type SwipeProps = ExtractPropTypes<typeof swipeProps>
 
-export const SWIPE_KEY: InjectionKey<SwipeProvide> = Symbol(name);
+export const SWIPE_KEY: InjectionKey<SwipeProvide> = Symbol(name)
 
 export default defineComponent({
   name,
@@ -73,8 +73,8 @@ export default defineComponent({
   emits: ['change', 'dragStart', 'dragEnd'],
 
   setup(props, { emit, slots }) {
-    const root = ref<HTMLElement>();
-    const track = ref<HTMLElement>();
+    const root = ref<HTMLElement>()
+    const track = ref<HTMLElement>()
     const state = reactive<SwipeState>({
       rect: null,
       width: 0,
@@ -82,46 +82,46 @@ export default defineComponent({
       offset: 0,
       active: 0,
       swiping: false,
-    });
+    })
 
     // Whether the user is dragging the swipe
-    let dragging = false;
+    let dragging = false
 
-    const touch = useTouch();
-    const { children, linkChildren } = useChildren(SWIPE_KEY);
+    const touch = useTouch()
+    const { children, linkChildren } = useChildren(SWIPE_KEY)
 
-    const count = computed(() => children.length);
+    const count = computed(() => children.length)
 
-    const size = computed(() => state[props.vertical ? 'height' : 'width']);
+    const size = computed(() => state[props.vertical ? 'height' : 'width'])
 
     const delta = computed(() =>
       props.vertical ? touch.deltaY.value : touch.deltaX.value,
-    );
+    )
 
     const minOffset = computed(() => {
       if (state.rect) {
-        const base = props.vertical ? state.rect.height : state.rect.width;
-        return base - size.value * count.value;
+        const base = props.vertical ? state.rect.height : state.rect.width
+        return base - size.value * count.value
       }
-      return 0;
-    });
+      return 0
+    })
 
     const maxCount = computed(() =>
       size.value
         ? Math.ceil(Math.abs(minOffset.value) / size.value)
         : count.value,
-    );
+    )
 
-    const trackSize = computed(() => count.value * size.value);
+    const trackSize = computed(() => count.value * size.value)
 
     const activeIndicator = computed(
       () => (state.active + count.value) % count.value,
-    );
+    )
 
     const isCorrectDirection = computed(() => {
-      const expect = props.vertical ? 'vertical' : 'horizontal';
-      return touch.direction.value === expect;
-    });
+      const expect = props.vertical ? 'vertical' : 'horizontal'
+      return touch.direction.value === expect
+    })
 
     const trackStyle = computed(() => {
       const style: CSSProperties = {
@@ -129,319 +129,311 @@ export default defineComponent({
         transform: `translate${
           props.vertical ? 'Y' : 'X'
         }(${+state.offset.toFixed(2)}px)`,
-      };
+      }
 
       if (size.value) {
-        const mainAxis = props.vertical ? 'height' : 'width';
-        const crossAxis = props.vertical ? 'width' : 'height';
-        style[mainAxis] = `${trackSize.value}px`;
-        style[crossAxis] = props[crossAxis] ? `${props[crossAxis]}px` : '';
+        const mainAxis = props.vertical ? 'height' : 'width'
+        const crossAxis = props.vertical ? 'width' : 'height'
+        style[mainAxis] = `${trackSize.value}px`
+        style[crossAxis] = props[crossAxis] ? `${props[crossAxis]}px` : ''
       }
 
-      return style;
-    });
+      return style
+    })
 
     const getTargetActive = (pace: number) => {
-      const { active } = state;
+      const { active } = state
 
       if (pace) {
-        if (props.loop) {
-          return clamp(active + pace, -1, count.value);
-        }
-        return clamp(active + pace, 0, maxCount.value);
+        if (props.loop)
+          return clamp(active + pace, -1, count.value)
+
+        return clamp(active + pace, 0, maxCount.value)
       }
-      return active;
-    };
+      return active
+    }
 
     const getTargetOffset = (targetActive: number, offset = 0) => {
-      let currentPosition = targetActive * size.value;
-      if (!props.loop) {
-        currentPosition = Math.min(currentPosition, -minOffset.value);
-      }
+      let currentPosition = targetActive * size.value
+      if (!props.loop)
+        currentPosition = Math.min(currentPosition, -minOffset.value)
 
-      let targetOffset = offset - currentPosition;
-      if (!props.loop) {
-        targetOffset = clamp(targetOffset, minOffset.value, 0);
-      }
+      let targetOffset = offset - currentPosition
+      if (!props.loop)
+        targetOffset = clamp(targetOffset, minOffset.value, 0)
 
-      return targetOffset;
-    };
+      return targetOffset
+    }
 
     const move = ({
       pace = 0,
       offset = 0,
       emitChange,
     }: {
-      pace?: number;
-      offset?: number;
-      emitChange?: boolean;
+      pace?: number
+      offset?: number
+      emitChange?: boolean
     }) => {
-      if (count.value <= 1) {
-        return;
-      }
+      if (count.value <= 1)
+        return
 
-      const { active } = state;
-      const targetActive = getTargetActive(pace);
-      const targetOffset = getTargetOffset(targetActive, offset);
+      const { active } = state
+      const targetActive = getTargetActive(pace)
+      const targetOffset = getTargetOffset(targetActive, offset)
 
       // auto move first and last swipe in loop mode
       if (props.loop) {
         if (children[0] && targetOffset !== minOffset.value) {
-          const outRightBound = targetOffset < minOffset.value;
-          children[0].setOffset(outRightBound ? trackSize.value : 0);
+          const outRightBound = targetOffset < minOffset.value
+          children[0].setOffset(outRightBound ? trackSize.value : 0)
         }
 
         if (children[count.value - 1] && targetOffset !== 0) {
-          const outLeftBound = targetOffset > 0;
+          const outLeftBound = targetOffset > 0
           children[count.value - 1].setOffset(
             outLeftBound ? -trackSize.value : 0,
-          );
+          )
         }
       }
 
-      state.active = targetActive;
-      state.offset = targetOffset;
+      state.active = targetActive
+      state.offset = targetOffset
 
-      if (emitChange && targetActive !== active) {
-        emit('change', activeIndicator.value);
-      }
-    };
+      if (emitChange && targetActive !== active)
+        emit('change', activeIndicator.value)
+    }
 
     const correctPosition = () => {
-      state.swiping = true;
+      state.swiping = true
 
-      if (state.active <= -1) {
-        move({ pace: count.value });
-      } else if (state.active >= count.value) {
-        move({ pace: -count.value });
-      }
-    };
+      if (state.active <= -1)
+        move({ pace: count.value })
+      else if (state.active >= count.value)
+        move({ pace: -count.value })
+    }
 
     // swipe to prev item
     const prev = () => {
-      correctPosition();
-      touch.reset();
+      correctPosition()
+      touch.reset()
 
       doubleRaf(() => {
-        state.swiping = false;
+        state.swiping = false
         move({
           pace: -1,
           emitChange: true,
-        });
-      });
-    };
+        })
+      })
+    }
 
     // swipe to next item
     const next = () => {
-      correctPosition();
-      touch.reset();
+      correctPosition()
+      touch.reset()
 
       doubleRaf(() => {
-        state.swiping = false;
+        state.swiping = false
         move({
           pace: 1,
           emitChange: true,
-        });
-      });
-    };
+        })
+      })
+    }
 
-    let autoplayTimer: ReturnType<typeof setTimeout>;
+    let autoplayTimer: ReturnType<typeof setTimeout>
 
-    const stopAutoplay = () => clearTimeout(autoplayTimer);
+    const stopAutoplay = () => clearTimeout(autoplayTimer)
 
     const autoplay = () => {
-      stopAutoplay();
+      stopAutoplay()
       if (+props.autoplay > 0 && count.value > 1) {
         autoplayTimer = setTimeout(() => {
-          next();
-          autoplay();
-        }, +props.autoplay);
+          next()
+          autoplay()
+        }, +props.autoplay)
       }
-    };
+    }
 
     // initialize swipe position
     const initialize = (active = +props.initialSwipe) => {
-      createSelectorQuery().select('#van-swipe-root').boundingClientRect(res => {
-        if (!root.value || !res) {
-          return;
-        }
-  
+      useTaroRect('#van-swipe-root').then((res) => {
+        if (!root.value || !res)
+          return
+
         const cb = () => {
           if (!isHidden(root)) {
             const rect = {
               width: res.width,
               height: res.height,
-            };
-            state.rect = rect;
-            state.width = +(props.width ?? rect.width);
-            state.height = +(props.height ?? rect.height);
-          }
-  
-          if (count.value) {
-            active = Math.min(count.value - 1, active);
-  
-            if (active === -1) {
-              active = count.value - 1;
             }
+            state.rect = rect
+            state.width = +(props.width ?? rect.width)
+            state.height = +(props.height ?? rect.height)
           }
-  
-          state.active = active;
-          state.swiping = true;
-          state.offset = getTargetOffset(active);
+
+          if (count.value) {
+            active = Math.min(count.value - 1, active)
+
+            if (active === -1)
+              active = count.value - 1
+          }
+
+          state.active = active
+          state.swiping = true
+          state.offset = getTargetOffset(active)
           children.forEach((swipe) => {
-            swipe.setOffset(0);
-          });
-  
-          autoplay();
-        };
-  
-        // issue: https://github.com/vant-ui/vant/issues/10052
-        if (isHidden(root)) {
-          nextTick().then(cb);
-        } else {
-          cb();
+            swipe.setOffset(0)
+          })
+
+          autoplay()
         }
-      }).exec()
-      
-    };
 
-    const resize = () => initialize(state.active);
+        // issue: https://github.com/vant-ui/vant/issues/10052
+        if (isHidden(root))
+          nextTick().then(cb)
+        else
+          cb()
+      })
+    }
 
-    let touchStartTime: number;
+    const resize = () => initialize(state.active)
 
-    const onTouchStart = (event: TouchEvent) => {
+    let touchStartTime: number
+
+    const onTouchStart: EventProps['onTouchStart'] = (event) => {
       if (
-        !props.touchable ||
+        !props.touchable
         // avoid resetting position on multi-finger touch
-        event.touches.length > 1
+        || event.touches.length > 1
       )
-        return;
+        return
 
-      touch.start(event);
+      touch.start(event)
 
-      dragging = false;
-      touchStartTime = Date.now();
+      dragging = false
+      touchStartTime = Date.now()
 
-      stopAutoplay();
-      correctPosition();
-    };
+      stopAutoplay()
+      correctPosition()
+    }
 
-    const onTouchMove = (event: TouchEvent) => {
+    const onTouchMove: EventProps['onTouchMove'] = (event) => {
       if (props.touchable && state.swiping) {
-        touch.move(event);
+        touch.move(event)
 
         if (isCorrectDirection.value) {
-          const isEdgeTouch =
-            !props.loop &&
-            ((state.active === 0 && delta.value > 0) ||
-              (state.active === count.value - 1 && delta.value < 0));
+          const isEdgeTouch
+            = !props.loop
+            && ((state.active === 0 && delta.value > 0)
+              || (state.active === count.value - 1 && delta.value < 0))
 
           if (!isEdgeTouch) {
-            preventDefault(event, props.stopPropagation);
-            move({ offset: delta.value });
+            preventDefault(event, props.stopPropagation)
+            move({ offset: delta.value })
 
             if (!dragging) {
-              emit('dragStart', { index: activeIndicator.value });
-              dragging = true;
+              emit('dragStart', { index: activeIndicator.value })
+              dragging = true
             }
           }
         }
       }
-    };
+    }
 
     const onTouchEnd = () => {
-      if (!props.touchable || !state.swiping) {
-        return;
-      }
+      if (!props.touchable || !state.swiping)
+        return
 
-      const duration = Date.now() - touchStartTime;
-      const speed = delta.value / duration;
-      const shouldSwipe =
-        Math.abs(speed) > 0.25 || Math.abs(delta.value) > size.value / 2;
+      const duration = Date.now() - touchStartTime
+      const speed = delta.value / duration
+      const shouldSwipe
+        = Math.abs(speed) > 0.25 || Math.abs(delta.value) > size.value / 2
 
       if (shouldSwipe && isCorrectDirection.value) {
         const offset = props.vertical
           ? touch.offsetY.value
-          : touch.offsetX.value;
+          : touch.offsetX.value
 
-        let pace = 0;
+        let pace = 0
 
         if (props.loop) {
-          pace = offset > 0 ? (delta.value > 0 ? -1 : 1) : 0;
-        } else {
+          pace = offset > 0 ? (delta.value > 0 ? -1 : 1) : 0
+        }
+        else {
           pace = -Math[delta.value > 0 ? 'ceil' : 'floor'](
             delta.value / size.value,
-          );
+          )
         }
 
         move({
           pace,
           emitChange: true,
-        });
-      } else if (delta.value) {
-        move({ pace: 0 });
+        })
+      }
+      else if (delta.value) {
+        move({ pace: 0 })
       }
 
-      dragging = false;
-      state.swiping = false;
+      dragging = false
+      state.swiping = false
 
-      emit('dragEnd', { index: activeIndicator.value });
-      autoplay();
-    };
+      emit('dragEnd', { index: activeIndicator.value })
+      autoplay()
+    }
 
     const swipeTo = (index: number, options: SwipeToOptions = {}) => {
-      correctPosition();
-      touch.reset();
+      correctPosition()
+      touch.reset()
 
       doubleRaf(() => {
-        let targetIndex;
-        if (props.loop && index === count.value) {
-          targetIndex = state.active === 0 ? 0 : index;
-        } else {
-          targetIndex = index % count.value;
-        }
+        let targetIndex
+        if (props.loop && index === count.value)
+          targetIndex = state.active === 0 ? 0 : index
+        else
+          targetIndex = index % count.value
 
         if (options.immediate) {
           doubleRaf(() => {
-            state.swiping = false;
-          });
-        } else {
-          state.swiping = false;
+            state.swiping = false
+          })
+        }
+        else {
+          state.swiping = false
         }
 
         move({
           pace: targetIndex - state.active,
           emitChange: true,
-        });
-      });
-    };
+        })
+      })
+    }
 
     const renderDot = (_: number, index: number) => {
-      const active = index === activeIndicator.value;
+      const active = index === activeIndicator.value
       const style = active
         ? {
             backgroundColor: props.indicatorColor,
           }
-        : undefined;
+        : undefined
 
-      return <Text style={style} class={bem('indicator', { active })} />;
-    };
+      return <Text style={style} class={bem('indicator', { active })} />
+    }
 
     const renderIndicator = () => {
       if (slots.indicator) {
         return slots.indicator({
           active: activeIndicator.value,
           total: count.value,
-        });
+        })
       }
       if (props.showIndicators && count.value > 1) {
         return (
           <View class={bem('indicators', { vertical: props.vertical })}>
             {Array(count.value).fill('').map(renderDot)}
           </View>
-        );
+        )
       }
-    };
+    }
 
     useExpose<SwipeExpose>({
       prev,
@@ -449,44 +441,38 @@ export default defineComponent({
       state,
       resize,
       swipeTo,
-    });
+    })
 
     linkChildren({
       size,
       props,
       count,
       activeIndicator,
-    });
+    })
 
     watch(
       () => props.initialSwipe,
-      (value) => initialize(+value),
-    );
+      value => initialize(+value),
+    )
 
-    watch(count, () => initialize(state.active));
-    watch(() => props.autoplay, autoplay);
+    watch(count, () => initialize(state.active))
+    watch(() => props.autoplay, autoplay)
     watch(
       [windowWidth, windowHeight, () => props.width, () => props.height],
       resize,
-    );
+    )
     watch(usePageVisibility(), (visible) => {
-      if (visible === 'visible') {
-        autoplay();
-      } else {
-        stopAutoplay();
-      }
-    });
+      if (visible === 'visible')
+        autoplay()
+      else
+        stopAutoplay()
+    })
 
-    onMounted(initialize);
-    onActivated(() => initialize(state.active));
-    onPopupReopen(() => initialize(state.active));
-    onDeactivated(stopAutoplay);
-    onBeforeUnmount(stopAutoplay);
-
-    // useEventListener will set passive to `false` to eliminate the warning of Chrome
-    useEventListener('touchmove', onTouchMove, {
-      target: track,
-    });
+    onMounted(initialize)
+    onActivated(() => initialize(state.active))
+    onPopupReopen(() => initialize(state.active))
+    onDeactivated(stopAutoplay)
+    onBeforeUnmount(stopAutoplay)
 
     return () => (
       <View id="van-swipe-root" ref={root} class={bem()}>
@@ -497,11 +483,12 @@ export default defineComponent({
           onTouchstartPassive={onTouchStart}
           onTouchend={onTouchEnd}
           onTouchcancel={onTouchEnd}
+          onTouchmove={(event) => { onTouchMove(event) }}
         >
           {slots.default?.()}
         </View>
         {renderIndicator()}
       </View>
-    );
+    )
   },
-});
+})

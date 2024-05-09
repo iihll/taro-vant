@@ -1,36 +1,36 @@
 import {
+  type ComputedRef,
+  type ExtractPropTypes,
+  type InjectionKey,
+  type PropType,
   computed,
   defineComponent,
-  type PropType,
-  type ComputedRef,
-  type InjectionKey,
-  type ExtractPropTypes,
-} from 'vue';
-import { truthProp, makeStringProp, createNamespace } from '../utils';
-import { useChildren } from '../vant-use';
-import './index.less'
+} from 'vue'
 import { View } from '@tarojs/components'
+import { createNamespace, makeStringProp, truthProp } from '../utils'
+import { useChildren } from '../vant-use'
+import './index.less'
 
-const [name, bem] = createNamespace('row');
+const [name, bem] = createNamespace('row')
 
-export type RowSpaces = { left?: number; right: number }[];
-export type VerticalSpaces = { bottom?: number }[];
+export type RowSpaces = { left?: number; right: number }[]
+export type VerticalSpaces = { bottom?: number }[]
 
-export type RowProvide = {
-  spaces: ComputedRef<RowSpaces>;
-  verticalSpaces: ComputedRef<VerticalSpaces>;
-};
+export interface RowProvide {
+  spaces: ComputedRef<RowSpaces>
+  verticalSpaces: ComputedRef<VerticalSpaces>
+}
 
-export const ROW_KEY: InjectionKey<RowProvide> = Symbol(name);
+export const ROW_KEY: InjectionKey<RowProvide> = Symbol(name)
 
-export type RowAlign = 'top' | 'center' | 'bottom';
+export type RowAlign = 'top' | 'center' | 'bottom'
 
 export type RowJustify =
   | 'start'
   | 'end'
   | 'center'
   | 'space-around'
-  | 'space-between';
+  | 'space-between'
 
 export const rowProps = {
   tag: makeStringProp<keyof HTMLElementTagNameMap>('div'),
@@ -43,9 +43,9 @@ export const rowProps = {
     default: 0,
   },
   justify: String as PropType<RowJustify>,
-};
+}
 
-export type RowProps = ExtractPropTypes<typeof rowProps>;
+export type RowProps = ExtractPropTypes<typeof rowProps>
 
 export default defineComponent({
   name,
@@ -53,78 +53,80 @@ export default defineComponent({
   props: rowProps,
 
   setup(props, { slots }) {
-    const { children, linkChildren } = useChildren(ROW_KEY);
+    const { children, linkChildren } = useChildren(ROW_KEY)
 
     const groups = computed(() => {
-      const groups: number[][] = [[]];
+      const groups: number[][] = [[]]
 
-      let totalSpan = 0;
+      let totalSpan = 0
       children.forEach((child, index) => {
-        totalSpan += Number(child.span);
+        totalSpan += Number(child.span)
 
         if (totalSpan > 24) {
-          groups.push([index]);
-          totalSpan -= 24;
-        } else {
-          groups[groups.length - 1].push(index);
+          groups.push([index])
+          totalSpan -= 24
         }
-      });
+        else {
+          groups[groups.length - 1].push(index)
+        }
+      })
 
-      return groups;
-    });
+      return groups
+    })
 
     const spaces = computed(() => {
-      let gutter = 0;
-      if (Array.isArray(props.gutter)) {
-        gutter = Number(props.gutter[0]) || 0;
-      } else {
-        gutter = Number(props.gutter);
-      }
-      const spaces: RowSpaces = [];
+      let gutter = 0
+      if (Array.isArray(props.gutter))
+        gutter = Number(props.gutter[0]) || 0
+      else
+        gutter = Number(props.gutter)
 
-      if (!gutter) {
-        return spaces;
-      }
+      const spaces: RowSpaces = []
+
+      if (!gutter)
+        return spaces
 
       groups.value.forEach((group) => {
-        const averagePadding = (gutter * (group.length - 1)) / group.length;
+        const averagePadding = (gutter * (group.length - 1)) / group.length
 
         group.forEach((item, index) => {
           if (index === 0) {
-            spaces.push({ right: averagePadding });
-          } else {
-            const left = gutter - spaces[item - 1].right;
-            const right = averagePadding - left;
-            spaces.push({ left, right });
+            spaces.push({ right: averagePadding })
           }
-        });
-      });
+          else {
+            const left = gutter - spaces[item - 1].right
+            const right = averagePadding - left
+            spaces.push({ left, right })
+          }
+        })
+      })
 
-      return spaces;
-    });
+      return spaces
+    })
 
     const verticalSpaces = computed(() => {
-      const { gutter } = props;
-      const spaces: VerticalSpaces = [];
+      const { gutter } = props
+      const spaces: VerticalSpaces = []
       if (Array.isArray(gutter) && gutter.length > 1) {
-        const bottom = Number(gutter[1]) || 0;
-        if (bottom <= 0) {
-          return spaces;
-        }
-        groups.value.forEach((group, index) => {
-          if (index === groups.value.length - 1) return;
-          group.forEach(() => {
-            spaces.push({ bottom });
-          });
-        });
-      }
-      return spaces;
-    });
+        const bottom = Number(gutter[1]) || 0
+        if (bottom <= 0)
+          return spaces
 
-    linkChildren({ spaces, verticalSpaces });
+        groups.value.forEach((group, index) => {
+          if (index === groups.value.length - 1)
+            return
+          group.forEach(() => {
+            spaces.push({ bottom })
+          })
+        })
+      }
+      return spaces
+    })
+
+    linkChildren({ spaces, verticalSpaces })
 
     return () => {
-      const { wrap, align, justify } = props;
+      const { wrap, align, justify } = props
       return (
         <View
           class={bem({
@@ -135,7 +137,7 @@ export default defineComponent({
         >
           {slots.default?.()}
         </View>
-      );
-    };
+      )
+    }
   },
-});
+})

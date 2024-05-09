@@ -1,24 +1,24 @@
 import {
-  inject,
+  type ExtractPropTypes,
+  type PropType,
   computed,
   defineComponent,
-  type PropType,
-  type ExtractPropTypes,
-} from 'vue';
+  inject,
+} from 'vue'
+import { Image } from '@tarojs/components'
 import {
   addUnit,
-  numericProp,
-  makeStringProp,
   createNamespace,
-} from '../utils';
-import { Badge, type BadgeProps } from '../badge';
-import { CONFIG_PROVIDER_KEY } from '../config-provider/ConfigProvider';
-import { Image } from '@tarojs/components'
+  makeStringProp,
+  numericProp,
+} from '../utils'
+import { Badge, type BadgeProps } from '../badge'
+import { CONFIG_PROVIDER_KEY } from '../config-provider/ConfigProvider'
 import './index.less'
 
-const [name, bem] = createNamespace('icon');
+const [name, bem] = createNamespace('icon')
 
-const isImage = (name?: string) => name?.includes('/');
+const isImage = (name?: string) => name?.includes('/')
 
 export const iconProps = {
   dot: Boolean,
@@ -29,9 +29,9 @@ export const iconProps = {
   color: String,
   badgeProps: Object as PropType<Partial<BadgeProps>>,
   classPrefix: String,
-};
+}
 
-export type IconProps = ExtractPropTypes<typeof iconProps>;
+export type IconProps = ExtractPropTypes<typeof iconProps>
 
 export default defineComponent({
   name,
@@ -39,15 +39,15 @@ export default defineComponent({
   props: iconProps,
 
   setup(props, { slots }) {
-    const config = inject(CONFIG_PROVIDER_KEY, null);
+    const config = inject(CONFIG_PROVIDER_KEY, null)
 
     const classPrefix = computed(
       () => props.classPrefix || config?.iconPrefix || bem(),
-    );
+    )
 
     return () => {
-      const { tag, dot, name, size, badge, color } = props;
-      const isImageIcon = isImage(name);
+      const { tag, dot, name, size, badge, color } = props
+      const isImageIcon = isImage(name)
 
       return (
         <Badge
@@ -65,9 +65,9 @@ export default defineComponent({
           {...props.badgeProps}
         >
           {slots.default?.()}
-          {isImageIcon && <Image class={bem('image')} src={name} />}
+          {isImageIcon && <Image class={bem('image')} src={name!} />}
         </Badge>
-      );
-    };
+      )
+    }
   },
-});
+})

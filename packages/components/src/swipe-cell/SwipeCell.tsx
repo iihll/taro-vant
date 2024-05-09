@@ -1,41 +1,42 @@
 import {
-  ref,
-  Ref,
-  reactive,
   computed,
   defineComponent,
-  type PropType,
+  reactive,
+  ref,
+} from 'vue'
+import type {
   type ExtractPropTypes,
-} from 'vue';
+  type PropType,
+  Ref,
+} from 'vue'
 import './index.less'
 import { View } from '@tarojs/components'
 
 // Utils
+import type { Interceptor } from '../utils'
 import {
-  clamp,
-  isDef,
-  numericProp,
-  Interceptor,
-  preventDefault,
   callInterceptor,
+  clamp,
   createNamespace,
+  isDef,
   makeNumericProp,
-} from '../utils';
+  numericProp,
+  preventDefault,
+} from '../utils'
 
 // Composables
-import { useRect, useClickAway, useEventListener, useTaroRect } from '../vant-use';
-import { useTouch } from '../composables/use-touch';
-import { useExpose } from '../composables/use-expose';
+import { useClickAway, useEventListener, useTaroRect } from '../vant-use'
+import { useTouch } from '../composables/use-touch'
+import { useExpose } from '../composables/use-expose'
 
 // Types
 import type {
-  SwipeCellSide,
   SwipeCellExpose,
   SwipeCellPosition,
-} from './types';
-import { createSelectorQuery } from '@tarojs/taro';
+  SwipeCellSide,
+} from './types'
 
-const [name, bem] = createNamespace('swipe-cell');
+const [name, bem] = createNamespace('swipe-cell')
 
 export const swipeCellProps = {
   name: makeNumericProp(''),
@@ -44,9 +45,9 @@ export const swipeCellProps = {
   rightWidth: numericProp,
   beforeClose: Function as PropType<Interceptor>,
   stopPropagation: Boolean,
-};
+}
 
-export type SwipeCellProps = ExtractPropTypes<typeof swipeCellProps>;
+export type SwipeCellProps = ExtractPropTypes<typeof swipeCellProps>
 
 export default defineComponent({
   name,
@@ -56,21 +57,21 @@ export default defineComponent({
   emits: ['open', 'close', 'click'],
 
   setup(props, { emit, slots }) {
-    let opened: boolean;
-    let lockClick: boolean;
-    let startOffset: number;
-    let isInBeforeClosing: boolean;
+    let opened: boolean
+    let lockClick: boolean
+    let startOffset: number
+    let isInBeforeClosing: boolean
 
-    const root = ref<HTMLElement>();
-    const leftRef = ref<HTMLElement>();
-    const rightRef = ref<HTMLElement>();
+    const root = ref<HTMLElement>()
+    const leftRef = ref<HTMLElement>()
+    const rightRef = ref<HTMLElement>()
 
     const state = reactive({
       offset: 0,
       dragging: false,
-    });
+    })
 
-    const touch = useTouch();
+    const touch = useTouch()
 
     // const getWidthByRef = (ref: Ref<HTMLElement | undefined>) =>
     //   ref.value ? useRect(ref).width : 0;
@@ -82,114 +83,110 @@ export default defineComponent({
 
     const leftWidth = computed(() =>
       isDef(props.leftWidth) ? +props.leftWidth : getWidthByRef('left'),
-    );
+    )
     const getLeftWidth = async () => {
-      if(isDef(props.leftWidth)) {
+      if (isDef(props.leftWidth))
         return +props.leftWidth
-      } else {
+      else
         return await getWidthByRef('left')
-      }
     }
 
     const rightWidth = computed(() =>
       isDef(props.rightWidth) ? +props.rightWidth : getWidthByRef('right'),
-    );
+    )
     const getRightWidth = async () => {
-      if(isDef(props.rightWidth)) {
+      if (isDef(props.rightWidth))
         return +props.rightWidth
-      } else {
+      else
         return await getWidthByRef('right')
-      }
     }
 
     const open = async (side: SwipeCellSide) => {
-      state.offset = side === 'left' ? await getLeftWidth() : -(await getRightWidth());
+      state.offset = side === 'left' ? await getLeftWidth() : -(await getRightWidth())
 
       if (!opened) {
-        opened = true;
+        opened = true
         emit('open', {
           name: props.name,
           position: side,
-        });
+        })
       }
-    };
+    }
 
     const close = (position: SwipeCellPosition) => {
-      state.offset = 0;
+      state.offset = 0
 
       if (opened) {
-        opened = false;
+        opened = false
         emit('close', {
           name: props.name,
           position,
-        });
+        })
       }
-    };
+    }
 
     const toggle = async (side: SwipeCellSide) => {
-      const offset = Math.abs(state.offset);
-      const THRESHOLD = 0.15;
-      const threshold = opened ? 1 - THRESHOLD : THRESHOLD;
-      const width = side === 'left' ? await getLeftWidth() : await getRightWidth();
+      const offset = Math.abs(state.offset)
+      const THRESHOLD = 0.15
+      const threshold = opened ? 1 - THRESHOLD : THRESHOLD
+      const width = side === 'left' ? await getLeftWidth() : await getRightWidth()
 
-      if (width && offset > width * threshold) {
-        open(side);
-      } else {
-        close(side);
-      }
-    };
+      if (width && offset > width * threshold)
+        open(side)
+      else
+        close(side)
+    }
 
     const onTouchStart = (event: TouchEvent) => {
       if (!props.disabled) {
-        startOffset = state.offset;
-        touch.start(event);
+        startOffset = state.offset
+        touch.start(event)
       }
-    };
+    }
 
     const onTouchMove = async (event: TouchEvent) => {
-      if (props.disabled) {
-        return;
-      }
+      if (props.disabled)
+        return
 
-      const { deltaX } = touch;
-      touch.move(event);
+      const { deltaX } = touch
+      touch.move(event)
 
       if (touch.isHorizontal()) {
-        lockClick = true;
-        state.dragging = true;
+        lockClick = true
+        state.dragging = true
 
-        const isEdge = !opened || deltaX.value * startOffset < 0;
-        if (isEdge) {
-          preventDefault(event, props.stopPropagation);
-        }
+        const isEdge = !opened || deltaX.value * startOffset < 0
+        if (isEdge)
+          preventDefault(event, props.stopPropagation)
 
         state.offset = clamp(
           deltaX.value + startOffset,
           -(await getRightWidth()),
           await getLeftWidth(),
-        );
+        )
       }
-    };
+    }
 
     const onTouchEnd = () => {
       if (state.dragging) {
-        state.dragging = false;
-        toggle(state.offset > 0 ? 'left' : 'right');
+        state.dragging = false
+        toggle(state.offset > 0 ? 'left' : 'right')
 
         // compatible with desktop scenario
         setTimeout(() => {
-          lockClick = false;
-        }, 0);
+          lockClick = false
+        }, 0)
       }
-    };
+    }
 
     const onClick = (position: SwipeCellPosition = 'outside') => {
-      if (isInBeforeClosing) return;
+      if (isInBeforeClosing)
+        return
 
-      emit('click', position);
+      emit('click', position)
 
       if (opened && !lockClick) {
-        isInBeforeClosing = true;
+        isInBeforeClosing = true
         callInterceptor(props.beforeClose, {
           args: [
             {
@@ -198,28 +195,28 @@ export default defineComponent({
             },
           ],
           done: () => {
-            isInBeforeClosing = false;
-            close(position);
+            isInBeforeClosing = false
+            close(position)
           },
           canceled: () => (isInBeforeClosing = false),
           error: () => (isInBeforeClosing = false),
-        });
+        })
       }
-    };
+    }
 
-    const getClickHandler =
-      (position: SwipeCellPosition, stop?: boolean) => (event: MouseEvent) => {
-        if (stop) {
-          event.stopPropagation();
-        }
-        onClick(position);
-      };
+    const getClickHandler
+      = (position: SwipeCellPosition, stop?: boolean) => (event: MouseEvent) => {
+        if (stop)
+          event.stopPropagation()
+
+        onClick(position)
+      }
 
     const renderSideContent = (
       side: SwipeCellSide,
       ref: Ref<HTMLElement | undefined>,
     ) => {
-      const contentSlot = slots[side];
+      const contentSlot = slots[side]
       if (contentSlot) {
         return (
           <View
@@ -230,27 +227,27 @@ export default defineComponent({
           >
             {contentSlot()}
           </View>
-        );
+        )
       }
-    };
+    }
 
     useExpose<SwipeCellExpose>({
       open,
       close,
-    });
+    })
 
-    useClickAway(root, () => onClick('outside'), { eventName: 'touchstart' });
+    useClickAway(root, () => onClick('outside'), { eventName: 'touchstart' })
 
     // useEventListener will set passive to `false` to eliminate the warning of Chrome
     useEventListener('touchmove', onTouchMove, {
       target: root,
-    });
+    })
 
     return () => {
       const wrapperStyle = {
         transform: `translate3d(${state.offset}px, 0, 0)`,
         transitionDuration: state.dragging ? '0s' : '.6s',
-      };
+      }
 
       return (
         <View
@@ -267,7 +264,7 @@ export default defineComponent({
             {renderSideContent('right', rightRef)}
           </View>
         </View>
-      );
-    };
+      )
+    }
   },
-});
+})
