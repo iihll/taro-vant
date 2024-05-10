@@ -44,7 +44,13 @@ export default defineComponent({
 
   props: badgeProps,
 
-  setup(props, { slots }) {
+  emits: ['click'],
+
+  setup(props, { slots, emit }) {
+    const onClick = () => {
+      emit('click')
+    }
+
     const hasContent = () => {
       if (slots.content)
         return true
@@ -122,6 +128,7 @@ export default defineComponent({
               { dot: props.dot, fixed: !!slots.default },
             ])}
             style={style.value}
+            onTap={onClick}
           >
             {renderContent()}
           </View>
@@ -132,7 +139,7 @@ export default defineComponent({
     return () => {
       if (slots.default) {
         return (
-          <View class={bem('wrapper')}>
+          <View class={bem('wrapper')} onTap={onClick}>
             {slots.default()}
             {renderBadge()}
           </View>

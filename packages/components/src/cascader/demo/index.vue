@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import VanField from '../../field';
-import VanPopup from '../../popup';
-import VanCascader, { CascaderOption } from '..';
-import { computed, reactive } from 'vue';
-import { useTranslate } from '../../../docs/site';
-import { deepClone } from '../../utils/deep-clone';
-import zhCNOptions from './area-zh-CN';
-import enUSOptions from './area-en-US';
-import { useCurrentLang } from '../../locale';
-import { useCascaderAreaData } from '@vant/area-data';
-import { closeToast, showLoadingToast } from '../../toast';
-import type { Numeric } from '../../utils';
+import { computed, reactive } from 'vue'
+import { useCascaderAreaData } from '@vant/area-data'
+import VanField from '../../field'
+import VanPopup from '../../popup'
+import type { CascaderOption } from '..'
+import VanCascader from '..'
+import { useTranslate } from '../../../docs/site'
+import { deepClone } from '../../utils/deep-clone'
+import { useCurrentLang } from '../../locale'
+import { closeToast, showLoadingToast } from '../../toast'
+import type { Numeric } from '../../utils'
+import zhCNOptions from './area-zh-CN'
+import enUSOptions from './area-en-US'
 
-const lang = useCurrentLang();
+const lang = useCurrentLang()
 
-const cascaderAreaData = useCascaderAreaData();
+const cascaderAreaData = useCascaderAreaData()
 
 const t = useTranslate({
   'zh-CN': {
@@ -61,106 +62,104 @@ const t = useTranslate({
     customContent: 'Custom Content',
     customFieldNames: 'Custom Field Names',
   },
-});
+})
 
-type StateItem = {
-  show: boolean;
-  value: Numeric | undefined;
-  result: string;
-  options?: CascaderOption[];
-  tabIndex?: number;
-};
+interface StateItem {
+  show: boolean
+  value: Numeric | undefined
+  result: string
+  options?: CascaderOption[]
+  tabIndex?: number
+}
 
 const baseState = reactive<StateItem>({
   show: false,
   value: '',
   result: '',
-});
+})
 const chinaAreaDataState = reactive<StateItem>({
   show: false,
   value: '',
   result: '',
-});
+})
 const customColorState = reactive<StateItem>({
   show: false,
   value: undefined,
   result: '',
-});
+})
 const asyncState = reactive<StateItem>({
   show: false,
   value: undefined,
   result: '',
   options: t('asyncOptions1'),
-});
+})
 const customFieldState = reactive<StateItem>({
   show: false,
   value: undefined,
   result: '',
-});
+})
 
 const fieldNames = {
   text: 'name',
   value: 'code',
   children: 'items',
-};
+}
 
 const customContentState = reactive<StateItem>({
   show: false,
   value: undefined,
   result: '',
-});
+})
 
 const customFieldOptions = computed(() => {
-  const options = deepClone(t('options'));
+  const options = deepClone(t('options'))
   const adjustFieldName = (item: CascaderOption) => {
     if ('text' in item) {
-      item.name = item.text;
-      delete item.text;
+      item.name = item.text
+      delete item.text
     }
     if ('value' in item) {
-      item.code = item.value;
-      delete item.value;
+      item.code = item.value
+      delete item.value
     }
     if ('children' in item) {
-      item.items = item.children;
-      delete item.children;
-      item.items.forEach(adjustFieldName);
+      item.items = item.children
+      delete item.children
+      item.items.forEach(adjustFieldName)
     }
-  };
-  options.forEach(adjustFieldName);
-  return options;
-});
-
-const loadDynamicOptions = ({ value }: CascaderOption) => {
-  if (value === '330000' && asyncState.options![0].children?.length === 0) {
-    showLoadingToast(t('loading'));
-    setTimeout(() => {
-      asyncState.options![0].children = t('asyncOptions2');
-      closeToast();
-    }, 1000);
   }
-};
+  options.forEach(adjustFieldName)
+  return options
+})
 
-const onFinish = (
-  state: StateItem,
+function loadDynamicOptions({ value }: CascaderOption) {
+  if (value === '330000' && asyncState.options![0].children?.length === 0) {
+    showLoadingToast(t('loading'))
+    setTimeout(() => {
+      asyncState.options![0].children = t('asyncOptions2')
+      closeToast()
+    }, 1000)
+  }
+}
+
+function onFinish(state: StateItem,
   {
     value,
     selectedOptions,
-  }: { value: Numeric; selectedOptions: CascaderOption[] },
-) => {
+  }: { value: Numeric; selectedOptions: CascaderOption[] }) {
   const result = selectedOptions
-    .map((option) => option.text || option.name)
-    .join('/');
+    .map(option => option.text || option.name)
+    .join('/')
 
-  state.show = false;
-  state.value = value;
-  state.result = result;
-};
+  state.show = false
+  state.value = value
+  state.result = result
+}
 </script>
 
 <template>
   <demo-block card :title="t('basicUsage')">
-    <van-field
+    <VanField
       v-model="baseState.result"
       is-link
       readonly
@@ -168,24 +167,24 @@ const onFinish = (
       :placeholder="t('selectArea')"
       @click="baseState.show = true"
     />
-    <van-popup
+    <VanPopup
       v-model:show="baseState.show"
       round
       teleport="body"
       position="bottom"
     >
-      <van-cascader
+      <VanCascader
         v-model="baseState.value"
         :title="t('selectArea')"
         :options="t('options')"
         @close="baseState.show = false"
         @finish="onFinish(baseState, $event)"
       />
-    </van-popup>
+    </VanPopup>
   </demo-block>
 
   <demo-block v-if="lang === 'zh-CN'" card :title="t('chinaAreaData')">
-    <van-field
+    <VanField
       v-model="chinaAreaDataState.result"
       is-link
       readonly
@@ -193,24 +192,24 @@ const onFinish = (
       :placeholder="t('selectArea')"
       @click="chinaAreaDataState.show = true"
     />
-    <van-popup
+    <VanPopup
       v-model:show="chinaAreaDataState.show"
       round
       teleport="body"
       position="bottom"
     >
-      <van-cascader
+      <VanCascader
         v-model="chinaAreaDataState.value"
         :title="t('selectArea')"
         :options="cascaderAreaData"
         @close="chinaAreaDataState.show = false"
         @finish="onFinish(chinaAreaDataState, $event)"
       />
-    </van-popup>
+    </VanPopup>
   </demo-block>
 
   <demo-block card :title="t('customColor')">
-    <van-field
+    <VanField
       v-model="customColorState.result"
       is-link
       readonly
@@ -218,13 +217,13 @@ const onFinish = (
       :placeholder="t('selectArea')"
       @click="customColorState.show = true"
     />
-    <van-popup
+    <VanPopup
       v-model:show="customColorState.show"
       round
       teleport="body"
       position="bottom"
     >
-      <van-cascader
+      <VanCascader
         v-model="customColorState.value"
         :title="t('selectArea')"
         :options="t('options')"
@@ -232,11 +231,11 @@ const onFinish = (
         @close="customColorState.show = false"
         @finish="onFinish(customColorState, $event)"
       />
-    </van-popup>
+    </VanPopup>
   </demo-block>
 
   <demo-block card :title="t('asyncOptions')">
-    <van-field
+    <VanField
       v-model="asyncState.result"
       is-link
       readonly
@@ -244,13 +243,13 @@ const onFinish = (
       :placeholder="t('selectArea')"
       @click="asyncState.show = true"
     />
-    <van-popup
+    <VanPopup
       v-model:show="asyncState.show"
       round
       teleport="body"
       position="bottom"
     >
-      <van-cascader
+      <VanCascader
         v-model="asyncState.value"
         :title="t('selectArea')"
         :options="asyncState.options"
@@ -258,11 +257,11 @@ const onFinish = (
         @change="loadDynamicOptions"
         @finish="onFinish(asyncState, $event)"
       />
-    </van-popup>
+    </VanPopup>
   </demo-block>
 
   <demo-block card :title="t('customFieldNames')">
-    <van-field
+    <VanField
       v-model="customFieldState.result"
       is-link
       readonly
@@ -270,14 +269,14 @@ const onFinish = (
       :placeholder="t('selectArea')"
       @click="customFieldState.show = true"
     />
-    <van-popup
+    <VanPopup
       v-model:show="customFieldState.show"
       round
       teleport="body"
       position="bottom"
       safe-area-inset-bottom
     >
-      <van-cascader
+      <VanCascader
         v-model="customFieldState.value"
         :title="t('selectArea')"
         :options="customFieldOptions"
@@ -285,11 +284,11 @@ const onFinish = (
         @close="customFieldState.show = false"
         @finish="onFinish(customFieldState, $event)"
       />
-    </van-popup>
+    </VanPopup>
   </demo-block>
 
   <demo-block card :title="t('customContent')">
-    <van-field
+    <VanField
       v-model="customContentState.result"
       is-link
       readonly
@@ -297,14 +296,14 @@ const onFinish = (
       :placeholder="t('selectArea')"
       @click="customContentState.show = true"
     />
-    <van-popup
+    <VanPopup
       v-model:show="customContentState.show"
       round
       teleport="body"
       position="bottom"
       safe-area-inset-bottom
     >
-      <van-cascader
+      <VanCascader
         v-model="customContentState.value"
         :title="t('selectArea')"
         :options="customFieldOptions"
@@ -313,10 +312,12 @@ const onFinish = (
         @finish="onFinish(customContentState, $event)"
       >
         <template #options-top="{ tabIndex }">
-          <div class="current-level">{{ t('currentLevel', tabIndex + 1) }}</div>
+          <div class="current-level">
+            {{ t('currentLevel', tabIndex + 1) }}
+          </div>
         </template>
-      </van-cascader>
-    </van-popup>
+      </VanCascader>
+    </VanPopup>
   </demo-block>
 </template>
 

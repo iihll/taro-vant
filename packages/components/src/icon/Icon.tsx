@@ -38,7 +38,9 @@ export default defineComponent({
 
   props: iconProps,
 
-  setup(props, { slots }) {
+  emits: ['click'],
+
+  setup(props, { slots, emit }) {
     const config = inject(CONFIG_PROVIDER_KEY, null)
 
     const classPrefix = computed(
@@ -63,6 +65,7 @@ export default defineComponent({
           }}
           content={badge}
           {...props.badgeProps}
+          onClick={() => { emit('click') }}
         >
           {slots.default?.()}
           {isImageIcon && <Image class={bem('image')} src={name!} />}
