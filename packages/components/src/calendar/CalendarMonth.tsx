@@ -5,6 +5,7 @@ import {
   defineComponent,
   ref,
 } from 'vue'
+import { View } from '@tarojs/components'
 
 // Utils
 import { useRect, useToggle } from '../vant-use'
@@ -185,21 +186,21 @@ export default defineComponent({
     const renderTitle = () => {
       if (props.showMonthTitle) {
         return (
-          <div class={bem('month-title')}>
+          <View class={bem('month-title')}>
             {slots['month-title']
               ? slots['month-title']({
                 date: props.date,
                 text: title.value,
               })
               : title.value}
-          </div>
+          </View>
         )
       }
     }
 
     const renderMark = () => {
       if (props.showMark && shouldRender.value)
-        return <div class={bem('month-mark')}>{props.date.getMonth() + 1}</div>
+        return <View class={bem('month-mark')}>{props.date.getMonth() + 1}</View>
     }
 
     const placeholders = computed<CalendarDayItem[]>(() => {
@@ -264,10 +265,10 @@ export default defineComponent({
     )
 
     const renderDays = () => (
-      <div ref={daysRef} role="grid" class={bem('days')}>
+      <View ref={daysRef} role="grid" class={bem('days')}>
         {renderMark()}
         {(shouldRender.value ? days : placeholders).value.map(renderDay)}
-      </div>
+      </View>
     )
 
     useExpose({
@@ -279,10 +280,10 @@ export default defineComponent({
     })
 
     return () => (
-      <div class={bem('month')} ref={monthRef}>
+      <View class={bem('month')} ref={monthRef}>
         {renderTitle()}
         {renderDays()}
-      </div>
+      </View>
     )
   },
 })

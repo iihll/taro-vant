@@ -7,6 +7,8 @@ import {
   ref,
   watch,
 } from 'vue'
+import './index.less'
+import { ScrollView, View } from '@tarojs/components'
 
 // Utils
 
@@ -566,18 +568,18 @@ export default defineComponent({
     }
 
     const renderFooter = () => (
-      <div
+      <View
         class={[
           bem('footer'),
           { 'van-safe-area-bottom': props.safeAreaInsetBottom },
         ]}
       >
         {renderFooterButton()}
-      </div>
+      </View>
     )
 
     const renderCalendar = () => (
-      <div class={bem()}>
+      <View class={bem()}>
         <CalendarHeader
           v-slots={pick(slots, [
             'title',
@@ -599,7 +601,7 @@ export default defineComponent({
           onClickSubtitle={(event: MouseEvent) => emit('clickSubtitle', event)}
           onPanelChange={onPanelChange}
         />
-        <div
+        <ScrollView
           ref={bodyRef}
           class={bem('body')}
           onScroll={canSwitch.value ? undefined : onScroll}
@@ -607,11 +609,11 @@ export default defineComponent({
           {canSwitch.value
             ? renderMonth(currentPanelDate.value, 0)
             : months.value.map(renderMonth)}
-        </div>
+        </ScrollView>
         {renderFooter()}
 
         <VanToast show={toastShow.value} onUpdate:show={(show) => { toastShow.value = show }} message={toastMessage.value} />
-      </div>
+      </View>
     )
 
     watch(() => props.show, init)
