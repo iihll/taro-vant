@@ -103,10 +103,12 @@ export default defineComponent({
 
     const onClick: CommonEventFunction = (event) => {
       const { target } = event
+      console.log('🚀 ~ setup ~ target:', target)
       const icon = iconRef.value
-      const iconClicked = icon === target || icon?.contains(target)
+      console.log('🚀 ~ setup ~ icon:', icon)
+      // const iconClicked = icon === target || icon?.contains(target)
 
-      if (!disabled.value && (iconClicked || !props.labelDisabled))
+      if (!disabled.value && !props.labelDisabled)
         emit('toggle')
 
       emit('click', event)
