@@ -2,7 +2,7 @@ import { computed, defineComponent } from 'vue'
 
 // Utils
 import { HAPTICS_FEEDBACK, createNamespace, makeStringProp } from '../utils'
-import { Icon } from '../icon'
+import { VanIcon } from '../icon'
 import {
   bem,
   getNextMonth,
@@ -97,7 +97,7 @@ export default defineComponent({
                 monthSlot({ disabled: monthDisabled })
               )
             : (
-            <Icon
+            <VanIcon
               class={{ [HAPTICS_FEEDBACK]: !monthDisabled }}
               name={monthIconName}
             />
@@ -114,7 +114,7 @@ export default defineComponent({
                 yearSlot({ disabled: yearDisabled })
               )
             : (
-            <Icon
+            <VanIcon
               class={{ [HAPTICS_FEEDBACK]: !yearDisabled }}
               name={yearIconName}
             />
@@ -143,8 +143,8 @@ export default defineComponent({
             {canSwitch
               ? [
                   renderAction(),
-                  <div class={bem('header-subtitle-text')}>{title}</div>,
-                  renderAction(true),
+                <div class={bem('header-subtitle-text')}>{title}</div>,
+                renderAction(true),
                 ]
               : title}
           </div>

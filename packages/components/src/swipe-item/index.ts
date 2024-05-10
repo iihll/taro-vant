@@ -1,10 +1,10 @@
 import _SwipeItem from './SwipeItem'
 
-export const SwipeItem = _SwipeItem
-export default SwipeItem
+export const VanSwipeItem = _SwipeItem
+export default VanSwipeItem
 
 declare module 'vue' {
   export interface GlobalComponents {
-    VanSwipeItem: typeof SwipeItem
+    VanSwipeItem: typeof VanSwipeItem
   }
 }

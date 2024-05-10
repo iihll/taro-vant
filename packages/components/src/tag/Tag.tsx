@@ -12,7 +12,7 @@ import {
   makeStringProp,
   truthProp,
 } from '../utils'
-import { Icon } from '../icon'
+import { VanIcon } from '../icon'
 import type { TagSize, TagType } from './types'
 import './index.less'
 
@@ -70,7 +70,7 @@ export default defineComponent({
         classes[size] = size
 
       const CloseIcon = closeable && (
-        <Icon
+        <VanIcon
           name="cross"
           class={[bem('close'), HAPTICS_FEEDBACK]}
           onClick={onClose}

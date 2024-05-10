@@ -42,7 +42,7 @@ import { useId } from '../composables/use-id'
 import { useExpose } from '../composables/use-expose'
 
 // Components
-import { Icon } from '../icon'
+import { VanIcon } from '../icon'
 import { VanCell as Cell } from '../cell'
 import {
   cutString,
@@ -524,11 +524,11 @@ export default defineComponent({
           <View class={bem('left-icon')} onClick={onClickLeftIcon}>
             {leftIconSlot
               ? (
-                  leftIconSlot()
-                )
+                leftIconSlot()
+              )
               : (
-              <Icon name={props.leftIcon} classPrefix={props.iconPrefix} />
-                )}
+                <VanIcon name={props.leftIcon} classPrefix={props.iconPrefix} />
+              )}
           </View>
         )
       }
@@ -542,11 +542,11 @@ export default defineComponent({
           <View class={bem('right-icon')} onClick={onClickRightIcon}>
             {rightIconSlot
               ? (
-                  rightIconSlot()
-                )
+                rightIconSlot()
+              )
               : (
-              <Icon name={props.rightIcon} classPrefix={props.iconPrefix} />
-                )}
+                <VanIcon name={props.rightIcon} classPrefix={props.iconPrefix} />
+              )}
           </View>
         )
       }
@@ -614,7 +614,7 @@ export default defineComponent({
       <View class={bem('body')}>
         {renderInput()}
         {showClear.value && (
-          <Icon
+          <VanIcon
             ref={clearIconRef}
             name={props.clearIcon}
             class={bem('clear')}

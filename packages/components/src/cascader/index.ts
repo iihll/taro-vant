@@ -1,7 +1,7 @@
 import _Cascader from './Cascader'
 
-export const Cascader = _Cascader
-export default Cascader
+export const VanCascader = _Cascader
+export default VanCascader
 export { cascaderProps } from './Cascader'
 export type { CascaderProps } from './Cascader'
 export type {
@@ -12,6 +12,6 @@ export type {
 
 declare module 'vue' {
   export interface GlobalComponents {
-    VanCascader: typeof Cascader
+    VanCascader: typeof VanCascader
   }
 }

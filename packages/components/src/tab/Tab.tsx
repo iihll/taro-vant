@@ -35,7 +35,7 @@ import { routeProps } from '../composables/use-route'
 import { TAB_STATUS_KEY } from '../composables/use-tab-status'
 
 // Components
-import { SwipeItem } from '../swipe-item'
+import { VanSwipeItem } from '../swipe-item'
 import { TabTitle } from './TabTitle'
 
 const [name, bem] = createNamespace('tab')
@@ -173,7 +173,7 @@ export default defineComponent({
 
       if (animated || swipeable) {
         return (
-          <SwipeItem
+          <VanSwipeItem
             id={id}
             role="tabpanel"
             class={bem('panel-wrapper', { inactive: hasInactiveClass.value })}
@@ -182,7 +182,7 @@ export default defineComponent({
             aria-labelledby={label}
           >
             <View class={bem('panel')}>{slots.default?.()}</View>
-          </SwipeItem>
+          </VanSwipeItem>
         )
       }
 

@@ -15,7 +15,7 @@ import { useTouch } from '../composables/use-touch'
 
 // Components
 import { View } from '@tarojs/components'
-import { Icon } from '../icon'
+import { VanIcon } from '../icon'
 
 import { type RateListItem, rateProps } from './types'
 
@@ -223,7 +223,7 @@ export default defineComponent({
           aria-checked={!isVoid}
           onTouchstart={onClickItem}
         >
-          <Icon
+          <VanIcon
             size={size}
             name={isFull ? icon : voidIcon}
             class={bem('icon', { disabled, full: isFull })}
@@ -231,7 +231,7 @@ export default defineComponent({
             classPrefix={iconPrefix}
           />
           {renderHalf && (
-            <Icon
+            <VanIcon
               size={size}
               style={{ width: item.value + 'em' }}
               name={isVoid ? voidIcon : icon}

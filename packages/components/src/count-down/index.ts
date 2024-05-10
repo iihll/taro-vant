@@ -1,7 +1,7 @@
 import _CountDown from './CountDown'
 
-export const CountDown = _CountDown
-export default CountDown
+export const VanCountDown = _CountDown
+export default VanCountDown
 export { countDownProps } from './types'
 export type {
   CountDownProps,
@@ -9,3 +9,9 @@ export type {
   CountDownThemeVars,
   CountDownCurrentTime,
 } from './types'
+
+declare module 'vue' {
+  export interface GlobalComponents {
+    VanCountDown: typeof VanCountDown
+  }
+}

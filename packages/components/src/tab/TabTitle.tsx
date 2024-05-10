@@ -1,7 +1,7 @@
 import { type CSSProperties, computed, defineComponent } from 'vue'
 import { Text, View } from '@tarojs/components'
 import { createNamespace, isDef, numericProp, truthProp } from '../utils'
-import { Badge } from '../badge'
+import { VanBadge } from '../badge'
 
 const [name, bem] = createNamespace('tab')
 
@@ -63,13 +63,13 @@ export const TabTitle = defineComponent({
 
       if (props.dot || (isDef(props.badge) && props.badge !== '')) {
         return (
-          <Badge
+          <VanBadge
             dot={props.dot}
             content={props.badge}
             showZero={props.showZeroBadge}
           >
             {_Text}
-          </Badge>
+          </VanBadge>
         )
       }
 

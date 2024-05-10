@@ -1,13 +1,13 @@
 import _Sticky from './Sticky'
 
-export const Sticky = _Sticky
-export default Sticky
+export const VanSticky = _Sticky
+export default VanSticky
 export { stickyProps } from './Sticky'
 export type { StickyProps, StickyPosition } from './Sticky'
 export type { StickyThemeVars } from './types'
 
 declare module 'vue' {
   export interface GlobalComponents {
-    VanSticky: typeof Sticky
+    VanSticky: typeof VanSticky
   }
 }

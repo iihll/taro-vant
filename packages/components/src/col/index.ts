@@ -1,12 +1,12 @@
-import _Col from './Col';
+import _Col from './Col'
 
-export const Col = _Col
-export default Col;
-export { colProps } from './Col';
-export type { ColProps } from './Col';
+export const VanCol = _Col
+export default VanCol
+export { colProps } from './Col'
+export type { ColProps } from './Col'
 
 declare module 'vue' {
   export interface GlobalComponents {
-    VanCol: typeof Col;
+    VanCol: typeof VanCol
   }
 }
