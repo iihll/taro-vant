@@ -28,7 +28,7 @@ import { useExpose } from '../composables/use-expose'
 import type { PopupPosition } from '../popup'
 import { VanPopup } from '../popup'
 import { VanButton } from '../button'
-import { showToast } from '../toast'
+import { VanToast } from '../toast'
 import {
   bem,
   calcDateNum,
@@ -362,12 +362,18 @@ export default defineComponent({
       scrollToCurrentDate()
     }
 
+    const toastMessage = ref('')
+    const toastShow = ref(false)
+
     const checkRange = (date: [Date, Date]) => {
       const { maxRange, rangePrompt, showRangePrompt } = props
 
       if (maxRange && calcDateNum(date) > +maxRange) {
-        if (showRangePrompt)
-          showToast(rangePrompt || t('rangePrompt', maxRange))
+        if (showRangePrompt) {
+          // showToast(rangePrompt || t('rangePrompt', maxRange))
+          toastMessage.value = rangePrompt || t('rangePrompt', maxRange)
+          toastShow.value = true
+        }
 
         emit('overRange')
         return false
@@ -492,7 +498,9 @@ export default defineComponent({
           emit('unselect', cloneDate(unselectedDate))
         }
         else if (props.maxRange && dates.length >= +props.maxRange) {
-          showToast(props.rangePrompt || t('rangePrompt', props.maxRange))
+          // showToast(props.rangePrompt || t('rangePrompt', props.maxRange))
+          toastMessage.value = props.rangePrompt || t('rangePrompt', props.maxRange)
+          toastShow.value = true
         }
         else {
           select([...dates, date])
@@ -601,6 +609,8 @@ export default defineComponent({
             : months.value.map(renderMonth)}
         </div>
         {renderFooter()}
+
+        <VanToast show={toastShow.value} onUpdate:show={(show) => { toastShow.value = show }} message={toastMessage.value} />
       </div>
     )
 

@@ -1,48 +1,49 @@
 import {
-  ref,
-  computed,
-  watchEffect,
-  defineComponent,
-  type PropType,
   type InjectionKey,
-} from 'vue';
+  type PropType,
+  computed,
+  defineComponent,
+  ref,
+  watchEffect,
+} from 'vue'
+import type { EventProps } from '@tarojs/components'
 import { View } from '@tarojs/components'
 
 // Utils
 import {
-  clamp,
-  numericProp,
-  makeArrayProp,
-  preventDefault,
-  createNamespace,
-  makeRequiredProp,
   type Numeric,
-} from '../utils';
-import { getElementTranslateY, findIndexOfEnabledOption } from './utils';
+  clamp,
+  createNamespace,
+  makeArrayProp,
+  makeRequiredProp,
+  numericProp,
+  preventDefault,
+} from '../utils'
 
 // Composables
-import { useEventListener, useParent } from '../vant-use';
-import { useTouch } from '../composables/use-touch';
-import { useExpose } from '../composables/use-expose';
+import { useParent } from '../vant-use'
+import { useTouch } from '../composables/use-touch'
+import { useExpose } from '../composables/use-expose'
+import { findIndexOfEnabledOption, getElementTranslateY } from './utils'
 
 // Types
 import type {
-  PickerOption,
-  PickerFieldNames,
   PickerColumnProvide,
-} from './types';
+  PickerFieldNames,
+  PickerOption,
+} from './types'
 
-const DEFAULT_DURATION = 200;
+const DEFAULT_DURATION = 200
 
 // 惯性滑动思路:
 // 在手指离开屏幕时，如果和上一次 move 时的间隔小于 `MOMENTUM_TIME` 且 move
 // 距离大于 `MOMENTUM_DISTANCE` 时，执行惯性滑动
-const MOMENTUM_TIME = 300;
-const MOMENTUM_DISTANCE = 15;
+const MOMENTUM_TIME = 300
+const MOMENTUM_DISTANCE = 15
 
-const [name, bem] = createNamespace('picker-column');
+const [name, bem] = createNamespace('picker-column')
 
-export const PICKER_KEY: InjectionKey<PickerColumnProvide> = Symbol(name);
+export const PICKER_KEY: InjectionKey<PickerColumnProvide> = Symbol(name)
 
 export default defineComponent({
   name,
@@ -61,174 +62,166 @@ export default defineComponent({
   emits: ['change', 'clickOption', 'scrollInto'],
 
   setup(props, { emit, slots }) {
-    let moving: boolean;
-    let startOffset: number;
-    let touchStartTime: number;
-    let momentumOffset: number;
-    let transitionEndTrigger: null | (() => void);
+    let moving: boolean
+    let startOffset: number
+    let touchStartTime: number
+    let momentumOffset: number
+    let transitionEndTrigger: null | (() => void)
 
-    const root = ref<HTMLElement>();
-    const wrapper = ref<HTMLElement>();
-    const currentOffset = ref(0);
-    const currentDuration = ref(0);
-    const touch = useTouch();
+    const root = ref<HTMLElement>()
+    const wrapper = ref<HTMLElement>()
+    const currentOffset = ref(0)
+    const currentDuration = ref(0)
+    const touch = useTouch()
 
-    const count = () => props.options.length;
+    const count = () => props.options.length
 
     const baseOffset = () =>
-      (props.optionHeight * (+props.visibleOptionNum - 1)) / 2;
+      (props.optionHeight * (+props.visibleOptionNum - 1)) / 2
 
     const updateValueByIndex = (index: number) => {
-      let enabledIndex = findIndexOfEnabledOption(props.options, index);
-      const offset = -enabledIndex * props.optionHeight;
+      let enabledIndex = findIndexOfEnabledOption(props.options, index)
+      const offset = -enabledIndex * props.optionHeight
 
       const trigger = () => {
-        if (enabledIndex > count() - 1) {
-          enabledIndex = findIndexOfEnabledOption(props.options, index);
-        }
+        if (enabledIndex > count() - 1)
+          enabledIndex = findIndexOfEnabledOption(props.options, index)
 
-        const value = props.options[enabledIndex][props.fields.value];
-        if (value !== props.value) {
-          emit('change', value);
-        }
-      };
+        const value = props.options[enabledIndex][props.fields.value]
+        if (value !== props.value)
+          emit('change', value)
+      }
 
       // trigger the change event after transitionend when moving
-      if (moving && offset !== currentOffset.value) {
-        transitionEndTrigger = trigger;
-      } else {
-        trigger();
-      }
+      if (moving && offset !== currentOffset.value)
+        transitionEndTrigger = trigger
+      else
+        trigger()
 
-      currentOffset.value = offset;
-    };
+      currentOffset.value = offset
+    }
 
-    const isReadonly = () => props.readonly || !props.options.length;
+    const isReadonly = () => props.readonly || !props.options.length
 
     const onClickOption = (index: number) => {
-      if (moving || isReadonly()) {
-        return;
-      }
+      if (moving || isReadonly())
+        return
 
-      transitionEndTrigger = null;
-      currentDuration.value = DEFAULT_DURATION;
-      updateValueByIndex(index);
-      emit('clickOption', props.options[index]);
-    };
+      transitionEndTrigger = null
+      currentDuration.value = DEFAULT_DURATION
+      updateValueByIndex(index)
+      emit('clickOption', props.options[index])
+    }
 
     const getIndexByOffset = (offset: number) =>
-      clamp(Math.round(-offset / props.optionHeight), 0, count() - 1);
+      clamp(Math.round(-offset / props.optionHeight), 0, count() - 1)
 
-    const currentIndex = computed(() => getIndexByOffset(currentOffset.value));
+    const currentIndex = computed(() => getIndexByOffset(currentOffset.value))
 
     const momentum = (distance: number, duration: number) => {
-      const speed = Math.abs(distance / duration);
+      const speed = Math.abs(distance / duration)
 
-      distance =
-        currentOffset.value + (speed / 0.003) * (distance < 0 ? -1 : 1);
+      distance
+        = currentOffset.value + (speed / 0.003) * (distance < 0 ? -1 : 1)
 
-      const index = getIndexByOffset(distance);
+      const index = getIndexByOffset(distance)
 
-      currentDuration.value = +props.swipeDuration;
-      updateValueByIndex(index);
-    };
+      currentDuration.value = +props.swipeDuration
+      updateValueByIndex(index)
+    }
 
     const stopMomentum = () => {
-      moving = false;
-      currentDuration.value = 0;
+      moving = false
+      currentDuration.value = 0
 
       if (transitionEndTrigger) {
-        transitionEndTrigger();
-        transitionEndTrigger = null;
+        transitionEndTrigger()
+        transitionEndTrigger = null
       }
-    };
+    }
 
-    const onTouchStart = (event: TouchEvent) => {
-      if (isReadonly()) {
-        return;
-      }
+    const onTouchStart: EventProps['onTouchStart'] = (event) => {
+      if (isReadonly())
+        return
 
-      touch.start(event);
+      touch.start(event)
 
       if (moving) {
-        const translateY = getElementTranslateY(wrapper.value!);
-        currentOffset.value = Math.min(0, translateY - baseOffset());
+        const translateY = getElementTranslateY(wrapper.value!)
+        currentOffset.value = Math.min(0, translateY - baseOffset())
       }
 
-      currentDuration.value = 0;
-      startOffset = currentOffset.value;
-      touchStartTime = Date.now();
-      momentumOffset = startOffset;
-      transitionEndTrigger = null;
-    };
+      currentDuration.value = 0
+      startOffset = currentOffset.value
+      touchStartTime = Date.now()
+      momentumOffset = startOffset
+      transitionEndTrigger = null
+    }
 
-    const onTouchMove = (event: TouchEvent) => {
-      if (isReadonly()) {
-        return;
-      }
+    const onTouchMove: EventProps['onTouchMove'] = (event) => {
+      if (isReadonly())
+        return
 
-      touch.move(event);
+      touch.move(event)
 
       if (touch.isVertical()) {
-        moving = true;
-        preventDefault(event, true);
+        moving = true
+        preventDefault(event, true)
       }
 
       const newOffset = clamp(
         startOffset + touch.deltaY.value,
         -(count() * props.optionHeight),
         props.optionHeight,
-      );
+      )
 
-      const newIndex = getIndexByOffset(newOffset);
-      if (newIndex !== currentIndex.value) {
-        emit('scrollInto', props.options[newIndex]);
-      }
+      const newIndex = getIndexByOffset(newOffset)
+      if (newIndex !== currentIndex.value)
+        emit('scrollInto', props.options[newIndex])
 
-      currentOffset.value = newOffset;
+      currentOffset.value = newOffset
 
-      const now = Date.now();
+      const now = Date.now()
       if (now - touchStartTime > MOMENTUM_TIME) {
-        touchStartTime = now;
-        momentumOffset = newOffset;
+        touchStartTime = now
+        momentumOffset = newOffset
       }
-    };
+    }
 
     const onTouchEnd = () => {
-      if (isReadonly()) {
-        return;
-      }
+      if (isReadonly())
+        return
 
-      const distance = currentOffset.value - momentumOffset;
-      const duration = Date.now() - touchStartTime;
-      const startMomentum =
-        duration < MOMENTUM_TIME && Math.abs(distance) > MOMENTUM_DISTANCE;
+      const distance = currentOffset.value - momentumOffset
+      const duration = Date.now() - touchStartTime
+      const startMomentum
+        = duration < MOMENTUM_TIME && Math.abs(distance) > MOMENTUM_DISTANCE
 
       if (startMomentum) {
-        momentum(distance, duration);
-        return;
+        momentum(distance, duration)
+        return
       }
 
-      const index = getIndexByOffset(currentOffset.value);
-      currentDuration.value = DEFAULT_DURATION;
-      updateValueByIndex(index);
+      const index = getIndexByOffset(currentOffset.value)
+      currentDuration.value = DEFAULT_DURATION
+      updateValueByIndex(index)
 
       // compatible with desktop scenario
       // use setTimeout to skip the click event emitted after touchstart
       setTimeout(() => {
-        moving = false;
-      }, 0);
-    };
+        moving = false
+      }, 0)
+    }
 
     const renderOptions = () => {
       const optionStyle = {
         height: `${props.optionHeight}px`,
-      };
+      }
 
       return props.options.map((option, index) => {
-        const text = option[props.fields.text];
-        const { disabled } = option;
-        const value: Numeric = option[props.fields.value];
+        const text = option[props.fields.text]
+        const { disabled } = option
+        const value: Numeric = option[props.fields.value]
         const data = {
           role: 'button',
           style: optionStyle,
@@ -241,44 +234,42 @@ export default defineComponent({
             option.className,
           ],
           onClick: () => onClickOption(index),
-        };
+        }
 
         const childData = {
           class: 'van-ellipsis',
           [props.allowHtml ? 'innerHTML' : 'textContent']: text,
-        };
+        }
 
         return (
           <View {...data}>
-            {slots.option ? (
-              slots.option(option, index)
-            ) : (
+            {slots.option
+              ? (
+                  slots.option(option, index)
+                )
+              : (
               <View {...childData} />
-            )}
+                )}
           </View>
-        );
-      });
-    };
+        )
+      })
+    }
 
-    useParent(PICKER_KEY);
-    useExpose({ stopMomentum });
+    useParent(PICKER_KEY)
+    useExpose({ stopMomentum })
 
     watchEffect(() => {
       const index = moving
         ? Math.floor(-currentOffset.value / props.optionHeight)
         : props.options.findIndex(
-            (option) => option[props.fields.value] === props.value,
-          );
-      const enabledIndex = findIndexOfEnabledOption(props.options, index);
-      const offset = -enabledIndex * props.optionHeight;
-      if (moving && enabledIndex < index) stopMomentum();
-      currentOffset.value = offset;
-    });
-
-    // useEventListener will set passive to `false` to eliminate the warning of Chrome
-    useEventListener('touchmove', onTouchMove, {
-      target: root,
-    });
+          option => option[props.fields.value] === props.value,
+        )
+      const enabledIndex = findIndexOfEnabledOption(props.options, index)
+      const offset = -enabledIndex * props.optionHeight
+      if (moving && enabledIndex < index)
+        stopMomentum()
+      currentOffset.value = offset
+    })
 
     return () => (
       <View
@@ -287,6 +278,7 @@ export default defineComponent({
         onTouchstartPassive={onTouchStart}
         onTouchend={onTouchEnd}
         onTouchcancel={onTouchEnd}
+        onTouchmove={(event) => { onTouchMove(event) }}
       >
         <View
           ref={wrapper}
@@ -303,6 +295,6 @@ export default defineComponent({
           {renderOptions()}
         </View>
       </View>
-    );
+    )
   },
-});
+})
