@@ -36,8 +36,8 @@ import { useGlobalZIndex } from '../composables/use-global-z-index'
 import { useScopeId } from '../composables/use-scope-id'
 
 // Components
-import { Icon } from '../icon'
-import { Overlay } from '../overlay'
+import { VanIcon } from '../icon'
+import { VanOverlay } from '../overlay'
 import { popupSharedProps } from './shared'
 
 // Types
@@ -136,7 +136,7 @@ export default defineComponent({
     const renderOverlay = () => {
       if (props.overlay) {
         return (
-          <Overlay
+          <VanOverlay
             v-slots={{ default: slots['overlay-content'] }}
             show={props.show}
             class={props.overlayClass}
@@ -160,7 +160,7 @@ export default defineComponent({
     const renderCloseIcon = () => {
       if (props.closeable) {
         return (
-          <Icon
+          <VanIcon
             role="button"
             tabindex={0}
             name={props.closeIcon}

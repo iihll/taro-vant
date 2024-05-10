@@ -22,7 +22,7 @@ import {
 } from '../utils'
 
 // Components
-import { Icon } from '../icon'
+import { VanIcon } from '../icon'
 
 import { ImageFit, imageProps } from './types'
 
@@ -90,7 +90,7 @@ export default defineComponent({
         return slot()
       }
       return (
-        <Icon
+        <VanIcon
           name={name}
           size={props.iconSize}
           class={className}

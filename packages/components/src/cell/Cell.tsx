@@ -22,7 +22,7 @@ import './index.less'
 import { routeProps, useRoute } from '../composables/use-route'
 
 // Components
-import { Icon } from '../icon'
+import { VanIcon } from '../icon'
 
 const [name, bem] = createNamespace('cell')
 
@@ -121,7 +121,7 @@ export default defineComponent({
 
       if (props.icon) {
         return (
-          <Icon
+          <VanIcon
             name={props.icon}
             class={bem('left-icon')}
             classPrefix={props.iconPrefix}
@@ -139,7 +139,7 @@ export default defineComponent({
           = props.arrowDirection && props.arrowDirection !== 'right'
             ? `arrow-${props.arrowDirection}`
             : 'arrow'
-        return <Icon name={name} class={bem('right-icon')} />
+        return <VanIcon name={name} class={bem('right-icon')} />
       }
     }
 

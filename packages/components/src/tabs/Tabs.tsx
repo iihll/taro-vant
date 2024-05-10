@@ -54,7 +54,7 @@ import { onPopupReopen } from '../composables/on-popup-reopen'
 import { useVisibilityChange } from '../composables/use-visibility-change'
 
 // Components
-import { Sticky } from '../sticky'
+import { VanSticky } from '../sticky'
 import { scrollLeftTo, scrollTopTo } from './utils'
 import TabsContent from './TabsContent'
 
@@ -480,20 +480,20 @@ export default defineComponent({
       <View ref={root} class={bem([props.type])}>
         {props.showHeader
           ? (
-              props.sticky
-                ? (
-            <Sticky
-              container={root.value}
-              offsetTop={offsetTopPx.value}
-              onScroll={onStickyScroll}
-            >
-              {renderHeader()}
-            </Sticky>
-                  )
-                : (
-                    renderHeader()
-                  )
-            )
+            props.sticky
+              ? (
+                <VanSticky
+                  container={root.value}
+                  offsetTop={offsetTopPx.value}
+                  onScroll={onStickyScroll}
+                >
+                  {renderHeader()}
+                </VanSticky>
+              )
+              : (
+                renderHeader()
+              )
+          )
           : null}
         <TabsContent
           ref={contentRef}

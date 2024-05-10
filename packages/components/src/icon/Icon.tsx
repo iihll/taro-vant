@@ -12,7 +12,7 @@ import {
   makeStringProp,
   numericProp,
 } from '../utils'
-import { Badge, type BadgeProps } from '../badge'
+import { VanBadge, type BadgeProps } from '../badge'
 import { CONFIG_PROVIDER_KEY } from '../config-provider/ConfigProvider'
 import './index.less'
 
@@ -52,7 +52,7 @@ export default defineComponent({
       const isImageIcon = isImage(name)
 
       return (
-        <Badge
+        <VanBadge
           dot={dot}
           tag={tag}
           class={[
@@ -69,7 +69,7 @@ export default defineComponent({
         >
           {slots.default?.()}
           {isImageIcon && <Image class={bem('image')} src={name!} />}
-        </Badge>
+        </VanBadge>
       )
     }
   },

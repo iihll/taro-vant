@@ -15,7 +15,7 @@ import {
 import { useSyncPropRef } from '../composables/use-sync-prop-ref'
 
 // Components
-import { Icon } from '../icon'
+import { VanIcon } from '../icon'
 
 // Types
 import {
@@ -72,7 +72,7 @@ export default defineComponent({
 
       return [
         action.icon && (
-          <Icon
+          <VanIcon
             name={action.icon}
             classPrefix={props.iconPrefix}
             class={bem('action-icon')}

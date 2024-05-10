@@ -23,9 +23,9 @@ import './index.less'
 import { useRefs } from '../composables/use-refs'
 
 // Components
-import { Tab } from '../tab'
-import { Tabs } from '../tabs'
-import { Icon } from '../icon'
+import { VanTab } from '../tab'
+import { VanTabs } from '../tabs'
+import { VanIcon } from '../icon'
 
 // Types
 import type { TabsClickTabEventParams } from '../tabs/types'
@@ -197,7 +197,7 @@ export default defineComponent({
           </View>
           {props.closeable
             ? (
-            <Icon
+            <VanIcon
               name={props.closeIcon}
               class={[bem('close-icon'), HAPTICS_FEEDBACK]}
               onClick={onClose}
@@ -241,7 +241,7 @@ export default defineComponent({
           {Text}
           {selected
             ? (
-            <Icon name="success" class={bem('selected-icon')} />
+            <VanIcon name="success" class={bem('selected-icon')} />
               )
             : null}
         </View>
@@ -266,7 +266,7 @@ export default defineComponent({
       const title = selected ? selected[textKey] : placeholder
 
       return (
-        <Tab
+        <VanTab
           title={title}
           titleClass={bem('tab', {
             unselected: !selected,
@@ -275,12 +275,12 @@ export default defineComponent({
           {slots['options-top']?.({ tabIndex })}
           {renderOptions(options, selected, tabIndex)}
           {slots['options-bottom']?.({ tabIndex })}
-        </Tab>
+        </VanTab>
       )
     }
 
     const renderTabs = () => (
-      <Tabs
+      <VanTabs
         v-model:active={activeTab.value}
         shrink
         animated
@@ -290,7 +290,7 @@ export default defineComponent({
         onClickTab={onClickTab}
       >
         {tabs.value.map(renderTab)}
-      </Tabs>
+      </VanTabs>
     )
 
     const scrollIntoView = (el: HTMLElement) => {

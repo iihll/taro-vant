@@ -26,7 +26,7 @@ import {
 } from '../utils'
 import { useChildren, useParent } from '../vant-use'
 import { useExpose } from '../composables/use-expose'
-import { Loading } from '../loading'
+import { VanLoading } from '../loading'
 import { PICKER_GROUP_KEY } from '../picker-group/PickerGroup'
 import {
   assignDefaultFields,
@@ -317,7 +317,7 @@ export default defineComponent({
     return () => (
       <View class={bem()}>
         {props.toolbarPosition === 'top' ? renderToolbar() : null}
-        {props.loading ? <Loading class={bem('loading')} /> : null}
+        {props.loading ? <VanLoading class={bem('loading')} /> : null}
         {slots['columns-top']?.()}
         {renderColumns()}
         {slots['columns-bottom']?.()}

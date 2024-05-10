@@ -1,10 +1,10 @@
-import { ref, watch, onMounted, defineComponent } from 'vue';
-import { numericProp, makeRequiredProp, createNamespace } from '../utils';
-import { Swipe, SwipeInstance } from '../swipe';
-import { useExpose } from '../composables/use-expose';
+import { ref, watch, onMounted, defineComponent } from 'vue'
+import { numericProp, makeRequiredProp, createNamespace } from '../utils'
+import { VanSwipe, SwipeInstance } from '../swipe'
+import { useExpose } from '../composables/use-expose'
 import { View } from '@tarojs/components'
 
-const [name, bem] = createNamespace('tabs');
+const [name, bem] = createNamespace('tabs')
 
 export default defineComponent({
   name,
@@ -22,16 +22,16 @@ export default defineComponent({
   emits: ['change'],
 
   setup(props, { emit, slots }) {
-    const swipeRef = ref<SwipeInstance>();
+    const swipeRef = ref<SwipeInstance>()
 
-    const onChange = (index: number) => emit('change', index);
+    const onChange = (index: number) => emit('change', index)
 
     const renderChildren = () => {
-      const Content = slots.default?.();
+      const Content = slots.default?.()
 
       if (props.animated || props.swipeable) {
         return (
-          <Swipe
+          <VanSwipe
             ref={swipeRef}
             loop={false}
             class={bem('track')}
@@ -42,27 +42,27 @@ export default defineComponent({
             onChange={onChange}
           >
             {Content}
-          </Swipe>
-        );
+          </VanSwipe>
+        )
       }
 
-      return Content;
-    };
+      return Content
+    }
 
     const swipeToCurrentTab = (index: number) => {
-      const swipe = swipeRef.value;
+      const swipe = swipeRef.value
       if (swipe && swipe.state.active !== index) {
-        swipe.swipeTo(index, { immediate: !props.inited });
+        swipe.swipeTo(index, { immediate: !props.inited })
       }
-    };
+    }
 
-    watch(() => props.currentIndex, swipeToCurrentTab);
+    watch(() => props.currentIndex, swipeToCurrentTab)
 
     onMounted(() => {
-      swipeToCurrentTab(props.currentIndex);
-    });
+      swipeToCurrentTab(props.currentIndex)
+    })
 
-    useExpose({ swipeRef });
+    useExpose({ swipeRef })
 
     return () => (
       <View
@@ -72,6 +72,6 @@ export default defineComponent({
       >
         {renderChildren()}
       </View>
-    );
+    )
   },
-});
+})

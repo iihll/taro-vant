@@ -21,10 +21,10 @@ import {
 import './index.less'
 
 // Components
-import { Icon } from '../icon'
+import { VanIcon } from '../icon'
+import { VanLoading } from '../loading'
 
 import type { LoadingType } from '../loading'
-import { Loading } from '../loading'
 
 // Types
 import type {
@@ -73,7 +73,7 @@ export default defineComponent({
         return slots.loading()
 
       return (
-        <Loading
+        <VanLoading
           size={props.loadingSize}
           type={props.loadingType}
           class={bem('loading')}
@@ -90,7 +90,7 @@ export default defineComponent({
 
       if (props.icon) {
         return (
-          <Icon
+          <VanIcon
             name={props.icon}
             class={bem('icon')}
             classPrefix={props.iconPrefix}
@@ -137,7 +137,7 @@ export default defineComponent({
         preventDefault(event)
       else if (!props.disabled)
         emit('click', event)
-        // route();
+      // route();
     }
 
     return () => {
