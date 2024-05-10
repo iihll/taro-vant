@@ -1,7 +1,7 @@
 import _Calendar from './Calendar'
 
-export const Calendar = _Calendar
-export default Calendar
+export const VanCalendar = _Calendar
+export default VanCalendar
 export { calendarProps } from './Calendar'
 export type { CalendarProps } from './Calendar'
 export type {
@@ -14,6 +14,6 @@ export type {
 
 declare module 'vue' {
   export interface GlobalComponents {
-    VanCalendar: typeof Calendar
+    VanCalendar: typeof VanCalendar
   }
 }

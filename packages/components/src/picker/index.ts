@@ -1,8 +1,8 @@
 import type { PickerProps } from './Picker'
 import _Picker from './Picker'
 
-export const Picker = _Picker
-export default Picker
+export const VanPicker = _Picker
+export default VanPicker
 export { pickerProps } from './Picker'
 export type { PickerProps }
 export type {
@@ -19,6 +19,6 @@ export type {
 
 declare module 'vue' {
   export interface GlobalComponents {
-    VanPicker: typeof Picker
+    VanPicker: typeof VanPicker
   }
 }

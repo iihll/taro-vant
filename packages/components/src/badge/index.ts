@@ -1,7 +1,7 @@
 import _Badge from './Badge'
 
-export const Badge = _Badge
-export default Badge
+export const VanBadge = _Badge
+export default VanBadge
 export { badgeProps } from './Badge'
 export type { BadgeProps, BadgePosition } from './Badge'
 export type { BadgeThemeVars } from './types'
