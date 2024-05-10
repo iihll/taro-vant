@@ -23,10 +23,10 @@ import {
 } from '../utils'
 
 // Components
-import { Icon } from '../icon'
+import { VanIcon } from '../icon'
 import { VanPopup } from '../popup'
 import type { LoadingType } from '../loading'
-import { Loading } from '../loading'
+import { VanLoading } from '../loading'
 import { lockClick } from './lock-click'
 
 // Types
@@ -104,7 +104,7 @@ export default defineComponent({
 
       if (hasIcon) {
         return (
-          <Icon
+          <VanIcon
             name={icon || type}
             size={iconSize}
             class={bem('icon')}
@@ -115,7 +115,7 @@ export default defineComponent({
 
       if (type === 'loading') {
         return (
-          <Loading class={bem('loading')} size={iconSize} type={loadingType} />
+          <VanLoading class={bem('loading')} size={iconSize} type={loadingType} />
         )
       }
     }

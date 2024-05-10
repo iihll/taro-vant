@@ -25,8 +25,8 @@ import { useChildren } from '../vant-use'
 import { useSyncPropRef } from '../composables/use-sync-prop-ref'
 
 // Components
-import { Tab } from '../tab'
-import { Tabs } from '../tabs'
+import { VanTab } from '../tab'
+import { VanTabs } from '../tabs'
 import Toolbar, {
   pickerToolbarProps,
   pickerToolbarSlots,
@@ -115,7 +115,7 @@ export default defineComponent({
             />
               )
             : null}
-          <Tabs
+          <VanTabs
             v-model:active={activeTab.value}
             class={bem('tabs')}
             shrink
@@ -123,11 +123,11 @@ export default defineComponent({
             lazyRender={false}
           >
             {props.tabs.map((title, index) => (
-              <Tab title={title} titleClass={bem('tab-title')}>
+              <VanTab title={title} titleClass={bem('tab-title')}>
                 {childNodes?.[index]}
-              </Tab>
+              </VanTab>
             ))}
-          </Tabs>
+          </VanTabs>
         </View>
       )
     }
