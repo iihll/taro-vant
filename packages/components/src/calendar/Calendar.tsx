@@ -11,7 +11,7 @@ import {
 // Utils
 
 // Composables
-import { onMountedOrActivated, raf, useRect } from '@vant/use'
+import { onMountedOrActivated, raf, useRect } from '../vant-use'
 import {
   getScrollTop,
   isDate,
@@ -26,7 +26,7 @@ import { useExpose } from '../composables/use-expose'
 
 // Components
 import type { PopupPosition } from '../popup'
-import { Popup } from '../popup'
+import { VanPopup } from '../popup'
 import { VanButton } from '../button'
 import { showToast } from '../toast'
 import {
@@ -191,6 +191,7 @@ export default defineComponent({
 
       return limitDateRange(defaultDate)
     }
+    const currentDate = ref(getInitialDate())
 
     const getInitialPanelDate = () => {
       const date = Array.isArray(currentDate.value)
@@ -203,8 +204,6 @@ export default defineComponent({
     let bodyHeight: number
 
     const bodyRef = ref<HTMLElement>()
-
-    const currentDate = ref(getInitialDate())
 
     const currentPanelDate = ref<Date>(getInitialPanelDate())
 
@@ -629,7 +628,7 @@ export default defineComponent({
     return () => {
       if (props.poppable) {
         return (
-          <Popup
+          <VanPopup
             v-slots={{ default: renderCalendar }}
             show={props.show}
             class={bem('popup')}
