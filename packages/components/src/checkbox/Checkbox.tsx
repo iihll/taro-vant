@@ -1,26 +1,27 @@
 import {
-  watch,
+  type ExtractPropTypes,
+  type PropType,
   computed,
   defineComponent,
-  type PropType,
-  type ExtractPropTypes,
-} from 'vue';
+  watch,
+} from 'vue'
+import './index.less'
 
 // Utils
-import { pick, extend, truthProp, createNamespace } from '../utils';
-import { CHECKBOX_GROUP_KEY } from '../checkbox-group/CheckboxGroup';
+import { useCustomFieldValue, useParent } from '../vant-use'
+import { createNamespace, extend, pick, truthProp } from '../utils'
+import { CHECKBOX_GROUP_KEY } from '../checkbox-group/CheckboxGroup'
 
 // Composables
-import { useParent, useCustomFieldValue } from '@vant/use';
-import { useExpose } from '../composables/use-expose';
+import { useExpose } from '../composables/use-expose'
 
 // Components
-import Checker, { checkerProps, type CheckerShape } from './Checker';
+import Checker, { type CheckerShape, checkerProps } from './Checker'
 
 // Types
-import type { CheckboxExpose } from './types';
+import type { CheckboxExpose } from './types'
 
-const [name, bem] = createNamespace('checkbox');
+const [name, bem] = createNamespace('checkbox')
 
 export const checkboxProps = extend({}, checkerProps, {
   shape: String as PropType<CheckerShape>,
@@ -29,9 +30,9 @@ export const checkboxProps = extend({}, checkerProps, {
     type: Boolean as PropType<boolean | null>,
     default: null,
   },
-});
+})
 
-export type CheckboxProps = ExtractPropTypes<typeof checkboxProps>;
+export type CheckboxProps = ExtractPropTypes<typeof checkboxProps>
 
 export default defineComponent({
   name,
@@ -41,62 +42,62 @@ export default defineComponent({
   emits: ['change', 'update:modelValue'],
 
   setup(props, { emit, slots }) {
-    const { parent } = useParent(CHECKBOX_GROUP_KEY);
+    const { parent } = useParent(CHECKBOX_GROUP_KEY)
 
     const setParentValue = (checked: boolean) => {
-      const { name } = props;
-      const { max, modelValue } = parent!.props;
-      const value = modelValue.slice();
+      const { name } = props
+      const { max, modelValue } = parent!.props
+      const value = modelValue.slice()
 
       if (checked) {
-        const overlimit = max && value.length >= +max;
+        const overlimit = max && value.length >= +max
 
         if (!overlimit && !value.includes(name)) {
-          value.push(name);
+          value.push(name)
 
-          if (props.bindGroup) {
-            parent!.updateValue(value);
-          }
+          if (props.bindGroup)
+            parent!.updateValue(value)
         }
-      } else {
-        const index = value.indexOf(name);
+      }
+      else {
+        const index = value.indexOf(name)
 
         if (index !== -1) {
-          value.splice(index, 1);
+          value.splice(index, 1)
 
-          if (props.bindGroup) {
-            parent!.updateValue(value);
-          }
+          if (props.bindGroup)
+            parent!.updateValue(value)
         }
       }
-    };
+    }
 
     const checked = computed(() => {
-      if (parent && props.bindGroup) {
-        return parent.props.modelValue.indexOf(props.name) !== -1;
-      }
-      return !!props.modelValue;
-    });
+      if (parent && props.bindGroup)
+        return parent.props.modelValue.includes(props.name)
+
+      return !!props.modelValue
+    })
 
     const toggle = (newValue = !checked.value) => {
-      if (parent && props.bindGroup) {
-        setParentValue(newValue);
-      } else {
-        emit('update:modelValue', newValue);
-      }
+      if (parent && props.bindGroup)
+        setParentValue(newValue)
+      else
+        emit('update:modelValue', newValue)
 
-      if (props.indeterminate !== null) emit('change', newValue);
-    };
+      if (props.indeterminate !== null)
+        emit('change', newValue)
+    }
 
     watch(
       () => props.modelValue,
       (value) => {
-        if (props.indeterminate === null) emit('change', value);
+        if (props.indeterminate === null)
+          emit('change', value)
       },
-    );
+    )
 
-    useExpose<CheckboxExpose>({ toggle, props, checked });
-    useCustomFieldValue(() => props.modelValue);
+    useExpose<CheckboxExpose>({ toggle, props, checked })
+    useCustomFieldValue(() => props.modelValue)
 
     return () => (
       <Checker
@@ -108,6 +109,6 @@ export default defineComponent({
         onToggle={toggle}
         {...props}
       />
-    );
+    )
   },
-});
+})
