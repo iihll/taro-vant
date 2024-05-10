@@ -141,6 +141,7 @@ export default defineComponent({
     }
 
     const onSelect = (option: CascaderOption, tabIndex: number) => {
+      console.log('option', option, tabIndex)
       if (option.disabled)
         return
 
@@ -235,7 +236,7 @@ export default defineComponent({
           tabindex={disabled ? undefined : selected ? 0 : -1}
           aria-checked={selected}
           aria-disabled={disabled || undefined}
-          onClick={() => onSelect(option, tabIndex)}
+          onTap={() => onSelect(option, tabIndex)}
         >
           {Text}
           {selected
