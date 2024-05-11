@@ -1,16 +1,17 @@
 import {
-  defineComponent,
   type InjectionKey,
+  defineComponent,
 } from 'vue'
+import { View } from '@tarojs/components'
 import {
-  createNamespace,
   BORDER_TOP_BOTTOM,
   type Numeric,
+  createNamespace,
 } from '../utils'
 import { useChildren } from '../vant-use'
 import { useExpose } from '../composables/use-expose'
-import { CollapseProvide, CollapseToggleAllOptions, collapseProps } from './types'
-import { View } from '@tarojs/components'
+import type { CollapseProvide, CollapseToggleAllOptions } from './types'
+import { collapseProps } from './types'
 
 const [name, bem] = createNamespace('collapse')
 
@@ -54,33 +55,33 @@ export default defineComponent({
       const { accordion, modelValue } = props
       if (accordion) {
         updateName(name === modelValue ? '' : name)
-      } else if (expanded) {
+      }
+      else if (expanded) {
         updateName((modelValue as Numeric[]).concat(name))
-      } else {
+      }
+      else {
         updateName(
-          (modelValue as Numeric[]).filter((activeName) => activeName !== name),
+          (modelValue as Numeric[]).filter(activeName => activeName !== name),
         )
       }
     }
 
     const toggleAll = (options: boolean | CollapseToggleAllOptions = {}) => {
-      if (props.accordion) {
+      if (props.accordion)
         return
-      }
 
-      if (typeof options === 'boolean') {
+      if (typeof options === 'boolean')
         options = { expanded: options }
-      }
 
       const { expanded, skipDisabled } = options!
       const expandedChildren = children.filter((item: any) => {
-        if (item.disabled && skipDisabled) {
+        if (item.disabled && skipDisabled)
           return item.expanded.value
-        }
+
         return expanded ?? !item.expanded.value
       })
 
-      const names = expandedChildren.map((item) => item.itemName.value)
+      const names = expandedChildren.map(item => item.itemName.value)
       updateName(names)
     }
 
@@ -88,11 +89,10 @@ export default defineComponent({
       const { accordion, modelValue } = props
 
       if (
-        process.env.NODE_ENV !== 'production' &&
-        !validateModelValue(modelValue, accordion)
-      ) {
+        process.env.NODE_ENV !== 'production'
+        && !validateModelValue(modelValue, accordion)
+      )
         return false
-      }
 
       return accordion
         ? modelValue === name
