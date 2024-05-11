@@ -15,7 +15,6 @@ import { ScrollView, View } from '@tarojs/components'
 // Composables
 import { onMountedOrActivated, raf, useRect } from '../vant-use'
 import {
-  getScrollTop,
   isDate,
   makeNumericProp,
   makeStringProp,
@@ -253,8 +252,11 @@ export default defineComponent({
 
     // calculate the position of the elements
     // and find the elements that needs to be rendered
-    const onScroll = () => {
-      const top = getScrollTop(bodyRef.value!)
+    const scrollTop = ref(0)
+    const onScroll = (event) => {
+      console.log('event', event)
+      // const top = getScrollTop(bodyRef.value!)
+      const top = 0
       const bottom = top + bodyHeight
 
       const heights = months.value.map((item, index) =>
@@ -314,7 +316,8 @@ export default defineComponent({
           months.value.some((month, index) => {
             if (compareMonth(month, targetDate) === 0) {
               if (bodyRef.value)
-                monthRefs.value[index].scrollToDate(bodyRef.value, targetDate)
+                scrollTop.value = monthRefs.value[index].scrollToDate(bodyRef.value, targetDate)
+              console.log('scrollTop.value', scrollTop.value)
 
               return true
             }
@@ -607,6 +610,7 @@ export default defineComponent({
           ref={bodyRef}
           class={bem('body')}
           onScroll={canSwitch.value ? undefined : onScroll}
+          scrollTop={scrollTop.value}
         >
           {canSwitch.value
             ? renderMonth(currentPanelDate.value, 0)

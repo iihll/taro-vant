@@ -244,11 +244,13 @@ export default defineComponent({
         const currentRow = Math.ceil((targetDate.getDate() + offset.value) / 7)
         const rowOffset = ((currentRow - 1) * daysRect.height) / totalRows
 
-        setScrollTop(
-          body,
-          daysRect.top + rowOffset + body.scrollTop - useRect(body).top,
-        )
+        // setScrollTop(
+        //   body,
+        //   daysRect.top + rowOffset + body.scrollTop - useRect(body).top,
+        // )
+        return daysRect.top + rowOffset + body.scrollTop - useRect(body).top
       }
+      return 0
     }
 
     const renderDay = (item: CalendarDayItem, index: number) => (

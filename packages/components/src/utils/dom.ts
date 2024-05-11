@@ -14,10 +14,11 @@ export function getScrollTop(el: ScrollElement): number {
 }
 
 export function setScrollTop(el: ScrollElement, value: number) {
-  if ('scrollTop' in el)
-    el.scrollTop = value
-  else
-    el.scrollTo(el.scrollX, value)
+  console.log('el', el)
+  // if ('scrollTop' in el)
+  //   el.scrollTop = value
+  // else
+  //   el.scrollTo(el.scrollX, value)
 }
 
 export function getRootScrollTop(): number {
