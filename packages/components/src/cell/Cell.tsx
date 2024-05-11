@@ -19,7 +19,6 @@ import {
 import './index.less'
 
 // Composables
-import { routeProps, useRoute } from '../composables/use-route'
 
 // Components
 import { VanIcon } from '../icon'
@@ -56,7 +55,7 @@ export const cellSharedProps = {
   },
 }
 
-export const cellProps = extend({}, cellSharedProps, routeProps)
+export const cellProps = extend({}, cellSharedProps)
 
 export type CellProps = ExtractPropTypes<typeof cellProps>
 
@@ -65,9 +64,9 @@ export default defineComponent({
 
   props: cellProps,
 
-  setup(props, { slots }) {
-    const route = useRoute()
+  emits: ['click'],
 
+  setup(props, { slots, emit }) {
     const renderLabel = () => {
       const showLabel = slots.label || isDef(props.label)
 
@@ -161,7 +160,9 @@ export default defineComponent({
           class={bem(classes)}
           role={clickable ? 'button' : undefined}
           tabindex={clickable ? 0 : undefined}
-          onClick={route}
+          onTap={(event) => {
+            emit('click', event)
+          }}
         >
           {renderLeftIcon()}
           {renderTitle()}

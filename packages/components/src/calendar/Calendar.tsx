@@ -513,7 +513,9 @@ export default defineComponent({
       }
     }
 
-    const updateShow = (value: boolean) => emit('update:show', value)
+    const updateShow = (value: boolean) => {
+      emit('update:show', value)
+    }
 
     const renderMonth = (date: Date, index: number) => {
       const showMonthTitle = index !== 0 || !props.showSubtitle
