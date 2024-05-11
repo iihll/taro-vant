@@ -1,12 +1,14 @@
-import { ref, computed, defineComponent, type PropType } from 'vue'
+import { type PropType, computed, defineComponent, ref } from 'vue'
+import type { CommonEventFunction } from '@tarojs/components'
+import { Text, View } from '@tarojs/components'
 import {
-  extend,
-  addUnit,
-  truthProp,
-  numericProp,
-  unknownProp,
-  makeRequiredProp,
   type Numeric,
+  addUnit,
+  extend,
+  makeRequiredProp,
+  numericProp,
+  truthProp,
+  unknownProp,
 } from '../utils'
 import { VanIcon } from '../icon'
 
@@ -15,7 +17,7 @@ import type { RadioShape } from '../radio'
 export type CheckerShape = 'square' | 'round'
 export type CheckerDirection = 'horizontal' | 'vertical'
 export type CheckerLabelPosition = 'left' | 'right'
-export type CheckerParent = {
+export interface CheckerParent {
   props: {
     max?: Numeric
     shape?: CheckerShape | RadioShape
@@ -54,12 +56,11 @@ export default defineComponent({
   emits: ['click', 'toggle'],
 
   setup(props, { emit, slots }) {
-    const iconRef = ref<HTMLElement>()
+    const iconRef = ref()
 
     const getParentProp = <T extends keyof CheckerParent['props']>(name: T) => {
-      if (props.parent && props.bindGroup) {
+      if (props.parent && props.bindGroup)
         return props.parent.props[name]
-      }
     }
 
     const disabled = computed(() => {
@@ -92,20 +93,24 @@ export default defineComponent({
           backgroundColor: checkedColor,
         }
       }
+
+      return {}
     })
 
     const shape = computed(() => {
       return props.shape || getParentProp('shape') || 'round'
     })
 
-    const onClick = (event: MouseEvent) => {
+    const onClick: CommonEventFunction = (event) => {
       const { target } = event
+      console.log('🚀 ~ setup ~ target:', target)
       const icon = iconRef.value
-      const iconClicked = icon === target || icon?.contains(target as Node)
+      console.log('🚀 ~ setup ~ icon:', icon)
+      // const iconClicked = icon === target || icon?.contains(target)
 
-      if (!disabled.value && (iconClicked || !props.labelDisabled)) {
+      if (!disabled.value && !props.labelDisabled)
         emit('toggle')
-      }
+
       emit('click', event)
     }
 
@@ -114,7 +119,7 @@ export default defineComponent({
       const iconSize = props.iconSize || getParentProp('iconSize')
 
       return (
-        <div
+        <View
           ref={iconRef}
           class={bem('icon', [
             shape.value,
@@ -124,26 +129,30 @@ export default defineComponent({
             shape.value !== 'dot'
               ? { fontSize: addUnit(iconSize) }
               : {
-                width: addUnit(iconSize),
-                height: addUnit(iconSize),
-                borderColor: iconStyle.value?.borderColor,
-              }
+                  width: addUnit(iconSize),
+                  height: addUnit(iconSize),
+                  borderColor: iconStyle.value?.borderColor,
+                }
           }
         >
-          {slots.icon ? (
-            slots.icon({ checked, disabled: disabled.value })
-          ) : shape.value !== 'dot' ? (
+          {slots.icon
+            ? (
+                slots.icon({ checked, disabled: disabled.value })
+              )
+            : shape.value !== 'dot'
+              ? (
             <VanIcon
               name={indeterminate ? 'minus' : 'success'}
               style={iconStyle.value}
             />
-          ) : (
-            <div
+                )
+              : (
+            <View
               class={bem('icon--dot__icon')}
               style={{ backgroundColor: iconStyle.value?.backgroundColor }}
-            ></div>
-          )}
-        </div>
+            ></View>
+                )}
+        </View>
       )
     }
 
@@ -152,40 +161,40 @@ export default defineComponent({
 
       if (slots.default) {
         return (
-          <span
+          <Text
             class={props.bem('label', [
               props.labelPosition,
               { disabled: disabled.value },
             ])}
           >
             {slots.default({ checked, disabled: disabled.value })}
-          </span>
+          </Text>
         )
       }
     }
 
     return () => {
-      const nodes: (JSX.Element | undefined)[] =
-        props.labelPosition === 'left'
+      const nodes
+        = props.labelPosition === 'left'
           ? [renderLabel(), renderIcon()]
           : [renderIcon(), renderLabel()]
 
       return (
-        <div
+        <View
           role={props.role}
           class={props.bem([
             {
-              disabled: disabled.value,
+              'disabled': disabled.value,
               'label-disabled': props.labelDisabled,
             },
             direction.value,
           ])}
           tabindex={disabled.value ? undefined : 0}
           aria-checked={props.checked}
-          onClick={onClick}
+          onTap={(event) => { onClick(event) }}
         >
           {nodes}
-        </div>
+        </View>
       )
     }
   },

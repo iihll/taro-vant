@@ -1,4 +1,6 @@
 import { computed, defineComponent } from 'vue'
+import type { CommonEventFunction } from '@tarojs/components'
+import { Text, View } from '@tarojs/components'
 
 // Utils
 import { HAPTICS_FEEDBACK, createNamespace, makeStringProp } from '../utils'
@@ -61,11 +63,11 @@ export default defineComponent({
       if (props.showTitle) {
         const text = props.title || t('title')
         const title = slots.title ? slots.title() : text
-        return <div class={bem('header-title')}>{title}</div>
+        return <View class={bem('header-title')}>{title}</View>
       }
     }
 
-    const onClickSubtitle = (event: MouseEvent) => emit('clickSubtitle', event)
+    const onClickSubtitle: CommonEventFunction = event => emit('clickSubtitle', event)
 
     const onPanelChange = (date: Date) => emit('panelChange', date)
 
@@ -88,7 +90,7 @@ export default defineComponent({
         onPanelChange((isNext ? getNextYear : getPrevYear)(props.date!))
 
       const MonthAction = (
-        <view
+        <View
           class={bem('header-action', { disabled: monthDisabled })}
           onClick={monthDisabled ? undefined : onMonthChange}
         >
@@ -102,10 +104,10 @@ export default defineComponent({
               name={monthIconName}
             />
               )}
-        </view>
+        </View>
       )
       const YearAction = showYearAction && (
-        <view
+        <View
           class={bem('header-action', { disabled: yearDisabled })}
           onClick={yearDisabled ? undefined : onYearChange}
         >
@@ -119,7 +121,7 @@ export default defineComponent({
               name={yearIconName}
             />
               )}
-        </view>
+        </View>
       )
 
       return isNext ? [MonthAction, YearAction] : [YearAction, MonthAction]
@@ -136,18 +138,18 @@ export default defineComponent({
         const canSwitch = props.switchMode !== 'none'
 
         return (
-          <div
+          <View
             class={bem('header-subtitle', { 'with-swicth': canSwitch })}
-            onClick={onClickSubtitle}
+            onTap={(event) => { onClickSubtitle(event) }}
           >
             {canSwitch
               ? [
                   renderAction(),
-                <div class={bem('header-subtitle-text')}>{title}</div>,
+                <View class={bem('header-subtitle-text')}>{title}</View>,
                 renderAction(true),
                 ]
               : title}
-          </div>
+          </View>
         )
       }
     }
@@ -161,20 +163,20 @@ export default defineComponent({
       ]
 
       return (
-        <div class={bem('weekdays')}>
+        <View class={bem('weekdays')}>
           {renderWeekDays.map(text => (
-            <span class={bem('weekday')}>{text}</span>
+            <Text class={bem('weekday')}>{text}</Text>
           ))}
-        </div>
+        </View>
       )
     }
 
     return () => (
-      <div class={bem('header')}>
+      <View class={bem('header')}>
         {renderTitle()}
         {renderSubtitle()}
         {renderWeekDays()}
-      </div>
+      </View>
     )
   },
 })

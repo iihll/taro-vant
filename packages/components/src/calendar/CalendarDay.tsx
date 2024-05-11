@@ -4,6 +4,7 @@ import {
   computed,
   defineComponent,
 } from 'vue'
+import { View } from '@tarojs/components'
 import { createNamespace, makeNumberProp, makeRequiredProp } from '../utils'
 import { bem } from './utils'
 import type { CalendarDayItem } from './types'
@@ -71,9 +72,9 @@ export default defineComponent({
 
       if (topInfo || slots['top-info']) {
         return (
-          <div class={bem('top-info')}>
+          <View class={bem('top-info')}>
             {slots['top-info'] ? slots['top-info'](props.item) : topInfo}
-          </div>
+          </View>
         )
       }
     }
@@ -83,11 +84,11 @@ export default defineComponent({
 
       if (bottomInfo || slots['bottom-info']) {
         return (
-          <div class={bem('bottom-info')}>
+          <View class={bem('bottom-info')}>
             {slots['bottom-info']
               ? slots['bottom-info'](props.item)
               : bottomInfo}
-          </div>
+          </View>
         )
       }
     }
@@ -100,7 +101,7 @@ export default defineComponent({
 
       if (type === 'selected') {
         return (
-          <div
+          <View
             class={bem('selected-day')}
             style={{
               width: rowHeight,
@@ -109,7 +110,7 @@ export default defineComponent({
             }}
           >
             {Nodes}
-          </div>
+          </View>
         )
       }
 
@@ -120,10 +121,10 @@ export default defineComponent({
       const { type, className } = props.item
 
       if (type === 'placeholder')
-        return <div class={bem('day')} style={style.value} />
+        return <View class={bem('day')} style={style.value} />
 
       return (
-        <div
+        <View
           role="gridcell"
           style={style.value}
           class={[bem('day', type), className]}
@@ -131,7 +132,7 @@ export default defineComponent({
           onClick={onClick}
         >
           {renderContent()}
-        </div>
+        </View>
       )
     }
   },

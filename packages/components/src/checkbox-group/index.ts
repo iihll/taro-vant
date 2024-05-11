@@ -1,7 +1,6 @@
-import { withInstall } from '../utils'
 import _CheckboxGroup from './CheckboxGroup'
 
-export const VanCheckboxGroup = withInstall(_CheckboxGroup)
+export const VanCheckboxGroup = _CheckboxGroup
 export default VanCheckboxGroup
 export { checkboxGroupProps } from './CheckboxGroup'
 export type { CheckboxGroupProps } from './CheckboxGroup'
