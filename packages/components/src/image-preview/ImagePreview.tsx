@@ -1,18 +1,18 @@
 import {
-  ref,
-  watch,
+  defineComponent,
   nextTick,
   reactive,
-  defineComponent,
+  ref,
+  watch,
 } from 'vue'
 import { View } from '@tarojs/components'
 
 // Utils
 import {
-  pick,
+  HAPTICS_FEEDBACK,
   callInterceptor,
   createNamespace,
-  HAPTICS_FEEDBACK,
+  pick,
 } from '../utils'
 
 // Composables
@@ -20,14 +20,17 @@ import { useExpose } from '../composables/use-expose'
 
 // Components
 import { VanIcon } from '../icon'
-import { VanSwipe, SwipeInstance, SwipeToOptions } from '../swipe'
+import type { SwipeInstance, SwipeToOptions } from '../swipe'
+import { VanSwipe } from '../swipe'
 import { VanPopup } from '../popup'
 import ImagePreviewItem from './ImagePreviewItem'
 
 // Types
-import {
-  ImagePreviewScaleEventParams,
+import type {
   ImagePreviewItemInstance,
+  ImagePreviewScaleEventParams,
+} from './types'
+import {
   imagePreviewProps,
 } from './types'
 
@@ -93,9 +96,8 @@ export default defineComponent({
     }
 
     const renderCover = () => {
-      if (slots.cover) {
+      if (slots.cover)
         return <View class={bem('cover')}>{slots.cover()}</View>
-      }
     }
 
     const onDragStart = () => {
@@ -127,9 +129,8 @@ export default defineComponent({
               image: slots.image,
             }}
             ref={(item) => {
-              if (index === state.active) {
+              if (index === state.active)
                 activedPreviewItemRef.value = item as ImagePreviewItemInstance
-              }
             }}
             src={image}
             show={props.show}
@@ -181,7 +182,7 @@ export default defineComponent({
 
     watch(
       () => props.startPosition,
-      (value) => setActive(+value),
+      value => setActive(+value),
     )
 
     watch(
@@ -193,7 +194,8 @@ export default defineComponent({
           nextTick(() => {
             swipeTo(+startPosition, { immediate: true })
           })
-        } else {
+        }
+        else {
           emit('close', {
             index: state.active,
             url: images[state.active],
