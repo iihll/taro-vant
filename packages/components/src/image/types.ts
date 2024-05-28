@@ -2,23 +2,24 @@ import type { CSSProperties, ExtractPropTypes, ImgHTMLAttributes, PropType } fro
 import { makeStringProp, numericProp, truthProp } from '../utils'
 
 export type ImageFit = 'scaleToFill'
-  | 'aspectFit'
-  | 'aspectFill'
-  | 'widthFix'
-  | 'heightFix'
-  | 'top'
-  | 'bottom'
-  | 'center'
-  | 'left'
-  | 'right'
-  | 'top left'
-  | 'top right'
-  | 'bottom left'
-  | 'bottom right'
+| 'aspectFit'
+| 'aspectFill'
+| 'widthFix'
+| 'heightFix'
+| 'top'
+| 'bottom'
+| 'center'
+| 'left'
+| 'right'
+| 'top left'
+| 'top right'
+| 'bottom left'
+| 'bottom right'
+| 'cover'
 
 export type ImagePosition = CSSProperties['objectPosition']
 
-export type ImageThemeVars = {
+export interface ImageThemeVars {
   imagePlaceholderTextColor?: string
   imagePlaceholderFontSize?: string
   imagePlaceholderBackground?: string
